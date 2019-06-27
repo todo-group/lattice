@@ -24,6 +24,8 @@ public:
   const std::string& name() const { return name_; }
   std::size_t dimension() const { return basis_.rows(); }
   basis_t basis_vectors() const { return basis_; }
+  double volume() const { return std::abs(basis_.determinant()); }
+      
 private:
   std::string name_;
   basis_t basis_;

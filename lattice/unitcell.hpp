@@ -63,6 +63,7 @@ public:
   std::size_t num_edges() const { return edges_.size(); }
   const vertex_t& vertex(std::size_t s) const { return vertices_[s]; }
   const edge_t& edge(std::size_t b) const { return edges_[b]; }
+  double volume() const { return basis_.volume(); }
   
 private:
   basis basis_;

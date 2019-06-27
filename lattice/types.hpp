@@ -18,6 +18,7 @@ typedef Eigen::Matrix<long, Eigen::Dynamic, 1> extent_t;
 
 // coordinate vector
 typedef Eigen::Matrix<double, Eigen::Dynamic, 1> coordinate_t;
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> coordinates_t;
 
 // unitcell offset
 typedef Eigen::Matrix<long, Eigen::Dynamic, 1> offset_t;

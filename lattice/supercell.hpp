@@ -1,0 +1,131 @@
+#ifndef LATTICE_SUPERCELL_HPP
+#define LATTICE_SUPERCELL_HPP
+
+#include <algorithm>
+#include "types.hpp"
+
+namespace lattice {
+
+class supercell {
+public:
+  supercell() {}
+  supercell(const extent_t& extent) { init(extent); }
+  supercell(const span_t& span) { init(span); }
+
+  void init(const extent_t& extent) {
+    span_t span = extent.asDiagonal();
+    init(span);
+  }
+  void init(const span_t& span) {
+    span_ = span;
+    if (span_.cols() != span_.rows())
+      throw std::invalid_argument("invalid shape of span matrix");
+    dim_ = span_.cols();
+    num_cells_ = std::size_t(std::abs(span_.cast<double>().determinant()) + 0.5);
+    rs_ = span_.cast<double>().inverse();
+    //// std::cout << "span: " << span_ << std::endl; ////
+    //// std::cout << "rs: " << rs_ << std::endl; ////
+    // top_ = offset_t::Zero(dim_);
+    // for (std::size_t j = 0; j < dim_; ++j) top_ += span_.col(j);
+    // std::cout << top_.transpose() << std::endl; ////
+
+    nmin_ = offset_t::Zero(dim_);
+    nmax_ = offset_t::Zero(dim_);
+    for (std::size_t i = 0; i < (1 << dim_); ++i) {
+      for (std::size_t m = 0; m < dim_; ++m) {
+        long v = 0;
+        for (std::size_t n = 0; n < dim_; ++n) v += ((i >> n) & 1) * span_(m, n);
+        nmin_(m) = std::min(nmin_(m), v);
+        nmax_(m) = std::max(nmax_(m), v);
+      }
+    }
+    std::cout << nmin_.transpose() << std::endl;
+    std::cout << nmax_.transpose() << std::endl;
+    
+    std::size_t lcord_max = 1;
+    for (std::size_t m = 0; m < dim_; ++m) lcord_max *= (nmax_(m) - nmin_(m));
+    lcord2index_.resize(lcord_max);
+    index2lcord_.clear();
+    for (std::size_t i = 0; i < lcord2index_.size(); ++i) {
+      offset_t c = lcord2offset(i);
+      if (within_supercell(c)) {
+        //// std::cout << __LINE__ << ' ' << i << " offset = " << c.transpose() << std::endl;
+        lcord2index_[i] = index2lcord_.size();
+        index2lcord_.push_back(i);
+      }
+    }
+    if (num_cells_ != index2lcord_.size())
+      throw std::logic_error("supercell::init() internal error");
+  }
+
+  std::size_t dimension() const { return dim_; }
+  std::size_t num_cells() const { return num_cells_; }
+
+  std::pair<std::size_t, offset_t> add_offset(std::size_t index, const offset_t& offset) const {
+    offset_t cell = lcord2offset(index2lcord_.at(index)) + offset;
+    offset_t crossing = offset_t::Zero(dim_);
+    const double eps = 1.0e-8;
+    bool checked = false;
+    while (!checked) {
+      checked = true;
+      auto p = rs_ * cell.cast<double>();
+      for (std::size_t m = 0; m < dim_; ++m) {
+        if (p(m) < -eps) {
+          checked = false;
+          cell += span_.col(m);
+          crossing(m) -= 1;
+        } else if (p(m) > (1.0 - eps)) {
+          checked = false;
+          cell -= span_.col(m);
+          crossing(m) += 1;
+        }
+      }
+    }
+    return std::make_pair(lcord2index(offset2lcord(cell)), crossing);
+  }
+
+  std::size_t lcord2index(std::size_t lc) const { return lcord2index_.at(lc); }
+
+  std::size_t index2lcord(std::size_t index) const { return index2lcord_.at(index); }
+
+  offset_t lcord2offset(std::size_t lc) const {
+    offset_t c(dim_);
+    for (std::size_t m = 0; m < dim_; ++m) {
+      c(m) = (lc % (nmax_(m) - nmin_(m))) + nmin_(m);
+      lc /= (nmax_(m) - nmin_(m));
+    }
+    return c;
+  }
+  
+  std::size_t offset2lcord(const offset_t& offset) const {
+    std::size_t lc = 0;
+    for (std::size_t m = dim_; m > 0; --m) {
+      lc *= (nmax_(m-1) - nmin_(m-1));
+      lc += offset(m-1);
+    }
+    return lc;
+  }
+
+  bool within_supercell(const offset_t& cell) const {
+    const double eps = 1.0e-8;
+    auto p = rs_ * cell.cast<double>();
+    bool res = true;
+    // std::cout << "cell: " << cell.transpose() << std::endl;
+    // std::cout << "p: " << p.transpose() << std::endl;
+    for (std::size_t m = 0; m < dim_; ++m) {
+      if (p(m) < -eps || p(m) > (1.0 - eps)) res = false;
+    }
+    return res;
+  }
+ 
+private:
+  std::size_t dim_, num_cells_;
+  span_t span_;
+  Eigen::MatrixXd rs_;
+  offset_t nmin_, nmax_;
+  std::vector<std::size_t> lcord2index_, index2lcord_;
+};
+
+} // end namespace lattice
+
+#endif // LATTICE_SUPERCELL_HPP

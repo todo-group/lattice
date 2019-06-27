@@ -18,5 +18,6 @@ TEST(UnitcellTest, SimpleSquare) {
   EXPECT_EQ(0, unitcell.edge(0).target);
   EXPECT_EQ(0, unitcell.edge(1).source);
   EXPECT_EQ(0, unitcell.edge(1).target);
+  EXPECT_DOUBLE_EQ(1.0, unitcell.volume());
   // EXPECT_ANY_THROW(unitcell.add_edge(0, 1, offset_x, 0));
 }
