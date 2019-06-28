@@ -1,4 +1,4 @@
-set(PROGS basis unitcell supercell)
+set(PROGS basis unitcell supercell lattice)
 foreach(name ${PROGS})
   set(target_name test_${name})
   add_executable(${target_name} ${name}.cpp)

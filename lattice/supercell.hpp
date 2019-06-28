@@ -1,3 +1,12 @@
+/*****************************************************************************
+*
+* Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef LATTICE_SUPERCELL_HPP
 #define LATTICE_SUPERCELL_HPP
 
@@ -9,6 +18,10 @@ namespace lattice {
 class supercell {
 public:
   supercell() {}
+  supercell(std::size_t dim, std::size_t length) {
+    span_t span = length * span_t::Identity(dim, dim);
+    init(span);
+  }
   supercell(const extent_t& extent) { init(extent); }
   supercell(const span_t& span) { init(span); }
 
@@ -39,8 +52,8 @@ public:
         nmax_(m) = std::max(nmax_(m), v);
       }
     }
-    std::cout << nmin_.transpose() << std::endl;
-    std::cout << nmax_.transpose() << std::endl;
+    // std::cout << nmin_.transpose() << std::endl;
+    // std::cout << nmax_.transpose() << std::endl;
     
     std::size_t lcord_max = 1;
     for (std::size_t m = 0; m < dim_; ++m) lcord_max *= (nmax_(m) - nmin_(m));
@@ -82,6 +95,10 @@ public:
       }
     }
     return std::make_pair(lcord2index(offset2lcord(cell)), crossing);
+  }
+
+  offset_t offset(std::size_t index) const {
+    return lcord2offset(index2lcord(index));
   }
 
   std::size_t lcord2index(std::size_t lc) const { return lcord2index_.at(lc); }

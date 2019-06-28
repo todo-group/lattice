@@ -1,3 +1,12 @@
+/*****************************************************************************
+*
+* Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef LATTICE_BASIS_HPP
 #define LATTICE_BASIS_HPP
 
@@ -9,25 +18,20 @@ namespace lattice {
 class basis {
 public:
   basis() {}
-  basis(const std::string& name, const basis_t& bs) : name_(name) { set_basis(bs); }
-  basis(const std::string& name, std::size_t dim) : name_(name) {
-    set_basis(basis_t::Identity(dim, dim));
-  }
+  explicit basis(const basis_t& bs) { set_basis(bs); }
+  explicit basis(std::size_t dim) { set_basis(basis_t::Identity(dim, dim)); }
   void clear() { *this = basis(); }
   
-  void set_name(const std::string& name) { name_ = name; }
   void set_basis(const basis_t& bs) {
     basis_ = bs;
     if (basis_.rows() != basis_.cols())
       throw std::runtime_error("basis dimension mismatch");
   }
-  const std::string& name() const { return name_; }
   std::size_t dimension() const { return basis_.rows(); }
   basis_t basis_vectors() const { return basis_; }
   double volume() const { return std::abs(basis_.determinant()); }
       
 private:
-  std::string name_;
   basis_t basis_;
 };
 

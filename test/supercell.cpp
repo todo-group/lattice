@@ -1,3 +1,12 @@
+/*****************************************************************************
+*
+* Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #include "gtest/gtest.h"
 #include "lattice/supercell.hpp"
 
@@ -42,6 +51,42 @@ TEST(SupercellTest, TwoD) {
   source = 1; offset << 4, 0; target = 7; crossing << 1, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 7; offset << -2, 0; target = 3; crossing << -1, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+}
+
+TEST(SupercellTest, TwoDSimple) {
+  lattice::supercell supercell(2, 4);
+  lattice::offset_t offset(2);
+  
+  // within_supercell
+  offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 1, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 1, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+
+  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
+    EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
+  }
+  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
+    auto offset = supercell.lcord2offset(supercell.index2lcord(i));
+    EXPECT_EQ(i, supercell.lcord2index(supercell.offset2lcord(offset)));
+  }
+  
+  std::size_t source, target, target_r;
+  lattice::offset_t crossing(2), crossing_r(2);
+  source = 0; offset << 1, 0; target = 1; crossing << 0, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 3; offset << 1, 0; target = 0; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 0; offset << 4, 0; target = 0; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 1; offset << 0, 4; target = 1; crossing << 0, 1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
 }
 
