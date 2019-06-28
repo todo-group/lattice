@@ -72,22 +72,29 @@ public:
       }
     }
     
-    std::size_t b = 0;
     for (std::size_t c = 0; c < supercell_.num_cells(); ++c) {
       for (std::size_t u = 0; u < unitcell_.num_bonds(); ++u) {
+        std::size_t b = unitcell_.num_bonds() * c + u;
         bond_types_[b] = unitcell_.bond(u).type;
         std::size_t s = c * unitcell_.num_sites() + unitcell_.bond(u).source;
         std::size_t t = supercell_.add_offset(c, unitcell_.bond(u).target_offset).first *
           unitcell_.num_sites() + unitcell_.bond(u).target;
-        neighbors_(s, num_neighbors_[s]) = t;
-        neighbors_(t, num_neighbors_[t]) = s;
-        neighbor_bonds_(s, num_neighbors_[s]) = b;
-        neighbor_bonds_(t, num_neighbors_[t]) = b;
-        ++num_neighbors_[s];
-        ++num_neighbors_[t];
         edge_sites_[b] = std::make_pair(s, t);
-        ++b;
       }
+    }
+    for (std::size_t b = 0; b < nb; ++b) {
+      std::size_t s = edge_sites_[b].first;
+      std::size_t t = edge_sites_[b].second;
+      neighbors_(s, num_neighbors_[s]) = t;
+      neighbor_bonds_(s, num_neighbors_[s]) = b;
+      ++num_neighbors_[s];
+    }
+    for (std::size_t b = 0; b < nb; ++b) {
+      std::size_t s = edge_sites_[b].first;
+      std::size_t t = edge_sites_[b].second;
+      neighbors_(t, num_neighbors_[t]) = s;
+      neighbor_bonds_(t, num_neighbors_[t]) = b;
+      ++num_neighbors_[t];
     }
   }
   
