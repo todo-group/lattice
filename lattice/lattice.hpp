@@ -62,8 +62,7 @@ public:
   }
 
   void init(const unitcell& cell, const supercell& super, const std::vector<boundary_t>& boundary) {
-    if (cell.dimension() != super.dimension() ||
-        cell.dimension() != boundary.size())
+    if (cell.dimension() != super.dimension() || cell.dimension() != boundary.size())
       throw std::invalid_argument("dimension mismatch");
 
     dim_ = cell.dimension();
@@ -74,36 +73,43 @@ public:
     for (std::size_t c = 0; c < super.num_cells(); ++c) {
       auto cell_offset = super.offset(c);
       for (std::size_t t = 0; t < cell.num_sites(); ++t) {
-        sites_.push_back(site_t(cell.site(t).type));
         coordinate_t pos = cell.basis_vectors() *
           (cell_offset.cast<double>() + cell.site(t).coordinate);
-        coordinates_.push_back(pos);
+        add_site(cell.site(t).type, pos);
       }
     }
-
     for (std::size_t c = 0; c < super.num_cells(); ++c) {
       for (std::size_t u = 0; u < cell.num_bonds(); ++u) {
         std::size_t b = bonds_.size();
         std::size_t s = c * cell.num_sites() + cell.bond(u).source;
         std::size_t t = super.add_offset(c, cell.bond(u).target_offset).first *
           cell.num_sites() + cell.bond(u).target;
-        bonds_.push_back(bond_t(s, t, cell.bond(u).type));
+        add_bond(s, t, cell.bond(u).type);
       }
-    }
-    for (std::size_t b = 0; b < bonds_.size(); ++b) {
-      std::size_t s = bonds_[b].source;
-      std::size_t t = bonds_[b].target;
-      sites_[s].neighbors.push_back(t);
-      sites_[s].neighbor_bonds.push_back(b);
-    }
-    for (std::size_t b = 0; b < bonds_.size(); ++b) {
-      std::size_t s = bonds_[b].source;
-      std::size_t t = bonds_[b].target;
-      sites_[t].neighbors.push_back(s);
-      sites_[t].neighbor_bonds.push_back(b);
     }
   }
 
+  std::size_t add_site(int tp, const coordinate_t& pos) {
+    if (pos.size() != dim_)
+      throw std::invalid_argument("dimension mismatch");
+    std::size_t s = sites_.size();
+    sites_.push_back(tp);
+    coordinates_.push_back(pos);
+    return s;
+  }
+
+  std::size_t add_bond(std::size_t s, std::size_t t, int tp) {
+    if (s >= sites_.size() || t >= sites_.size())
+      throw std::invalid_argument("site index out of range");
+    std::size_t b = bonds_.size();
+    bonds_.push_back(bond_t(s, t, tp));
+    sites_[s].neighbors.push_back(t);
+    sites_[s].neighbor_bonds.push_back(b);
+    sites_[t].neighbors.push_back(s);
+    sites_[t].neighbor_bonds.push_back(b);
+    return b;
+  }
+      
   std::size_t dimension() const { return dim_; }
   
   std::size_t num_sites() const { return sites_.size(); }

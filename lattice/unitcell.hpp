@@ -89,10 +89,6 @@ public:
       throw std::invalid_argument("unitcell offset dimension mismatch");
     std::size_t b = bonds_.size();
     bonds_.push_back(bond_t(s, t, os, tp));
-    // sites_[s].neighbor_bonds.push_back(b);
-    // sites_[t].neighbor_bonds.push_back(b);
-    // sites_[s].neighbors.push_back(t);
-    // sites_[t].neighbors.push_back(s);
     return b;
   }
 

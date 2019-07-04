@@ -43,11 +43,6 @@ public:
     dim_ = span_.cols();
     num_cells_ = std::size_t(std::abs(span_.cast<double>().determinant()) + 0.5);
     rs_ = span_.cast<double>().inverse();
-    //// std::cout << "span: " << span_ << std::endl; ////
-    //// std::cout << "rs: " << rs_ << std::endl; ////
-    // top_ = offset_t::Zero(dim_);
-    // for (std::size_t j = 0; j < dim_; ++j) top_ += span_.col(j);
-    // std::cout << top_.transpose() << std::endl; ////
 
     nmin_ = offset_t::Zero(dim_);
     nmax_ = offset_t::Zero(dim_);
@@ -59,8 +54,6 @@ public:
         nmax_(m) = std::max(nmax_(m), v);
       }
     }
-    // std::cout << nmin_.transpose() << std::endl;
-    // std::cout << nmax_.transpose() << std::endl;
     
     std::size_t lcord_max = 1;
     for (std::size_t m = 0; m < dim_; ++m) lcord_max *= (nmax_(m) - nmin_(m));
@@ -69,7 +62,6 @@ public:
     for (std::size_t i = 0; i < lcord2index_.size(); ++i) {
       offset_t c = lcord2offset(i);
       if (within_supercell(c)) {
-        //// std::cout << __LINE__ << ' ' << i << " offset = " << c.transpose() << std::endl;
         lcord2index_[i] = index2lcord_.size();
         index2lcord_.push_back(i);
       }
@@ -134,8 +126,6 @@ public:
     const double eps = 1.0e-8;
     auto p = rs_ * cell.cast<double>();
     bool res = true;
-    // std::cout << "cell: " << cell.transpose() << std::endl;
-    // std::cout << "p: " << p.transpose() << std::endl;
     for (std::size_t m = 0; m < dim_; ++m) {
       if (p(m) < -eps || p(m) > (1.0 - eps)) res = false;
     }
