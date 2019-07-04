@@ -1,0 +1,149 @@
+<LATTICES>
+<LATTICE name="chain lattice" dimension="1">
+  <BASIS><VECTOR>1</VECTOR></BASIS>
+</LATTICE>
+
+<LATTICE name="square lattice" dimension="2">
+  <BASIS><VECTOR>1 0</VECTOR><VECTOR>0 1</VECTOR></BASIS>
+</LATTICE>
+
+<LATTICE name="triangular lattice" dimension="2">
+  <BASIS><VECTOR>1 0</VECTOR><VECTOR>0.5 0.8660254037844386</VECTOR></BASIS>
+</LATTICE>
+
+<LATTICE name="simple cubic lattice" dimension="3">
+  <BASIS>
+    <VECTOR>1 0 0</VECTOR>
+    <VECTOR>0 1 0</VECTOR>
+    <VECTOR>0 0 1</VECTOR>
+  </BASIS>
+</LATTICE>
+
+<LATTICE name="face-centered cubic lattice" dimension="3">
+  <BASIS>
+    <VECTOR>0.5 0.5 0  </VECTOR>
+    <VECTOR>0.5 0   0.5</VECTOR>
+    <VECTOR>0   0.5 0.5</VECTOR>
+  </BASIS>
+</LATTICE>
+
+<LATTICE name="body-centered cubic lattice" dimension="3">
+  <BASIS>
+    <VECTOR> 0.5  0.5 -0.5</VECTOR>
+    <VECTOR> 0.5 -0.5  0.5</VECTOR>
+    <VECTOR>-0.5  0.5  0.5</VECTOR>
+  </BASIS>
+</LATTICE>
+
+<LATTICE name="hexagonal lattice" dimension="3">
+  <BASIS>
+    <VECTOR>1   0                  0</VECTOR>
+    <VECTOR>0.5 0.8660254037844386 0</VECTOR>
+    <VECTOR>0   0                  1</VECTOR>
+  </BASIS>
+</LATTICE>
+
+<UNITCELL name="isolated" dimension="1">
+  <VERTEX/>
+</UNITCELL>
+
+<UNITCELL name="simple1d" dimension="1">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="simple2d" dimension="2">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="anisotropic2d" dimension="2">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="triangular" dimension="2">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="anisotropic triangular" dimension="2">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="nnn2d" dimension="2">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 -1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="Kagome" dimension="2">
+  <VERTEX><COORDINATE>0   0</COORDINATE></VERTEX>
+  <VERTEX><COORDINATE>0.5 0</COORDINATE></VERTEX>
+  <VERTEX><COORDINATE>0 0.5</COORDINATE></VERTEX>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="3"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="3" offset="1 -1"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="3" offset="0 -1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="honeycomb" dimension="2">
+  <VERTEX><COORDINATE> 0                  0</COORDINATE></VERTEX>
+  <VERTEX><COORDINATE>-0.3333333333333333 0.6666666666666666</COORDINATE></VERTEX>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="simple3d" dimension="3" vertices="1">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0 0"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1 0"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 0 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="anisotropic3d" dimension="3">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 0 1"/></EDGE>
+</UNITCELL>
+
+<GRAPH name="5-site dimerized" vertices="5">
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="1" source="2" target="3"/>
+  <EDGE type="0" source="3" target="4"/>
+  <EDGE type="1" source="4" target="5"/>
+</GRAPH>
+
+<GRAPH name="4-site mixed" vertices="4">
+  <VERTEX id="1" type="0"/>
+  <VERTEX id="2" type="1"/>
+  <VERTEX id="3" type="0"/>
+  <VERTEX id="4" type="1"/>
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="0" source="2" target="3"/>
+  <EDGE type="0" source="3" target="4"/>
+  <EDGE type="0" source="4" target="1"/>
+  <EDGE type="1" source="1" target="3"/>
+  <EDGE type="1" source="2" target="4"/>
+</GRAPH>
+
+<GRAPH name="triangle" vertices="3">
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="0" source="2" target="3"/>
+  <EDGE type="0" source="3" target="1"/>
+</GRAPH>
+
+</LATTICES>
