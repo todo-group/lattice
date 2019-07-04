@@ -25,10 +25,8 @@ namespace lattice {
 class basis {
 public:
   basis() {}
-  explicit basis(const basis_t& bs, const std::string& name = "") : name_(name) { set_basis(bs); }
-  explicit basis(std::size_t dim, const std::string& name = "") : name_(name) {
-    set_basis(basis_t::Identity(dim, dim));
-  }
+  explicit basis(const basis_t& bs) : name_("") { set_basis(bs); }
+  explicit basis(const basis_t& bs, const std::string& name) : name_(name) { set_basis(bs); }
   void clear() { *this = basis(); }
   
   void set_basis(const basis_t& bs) {
@@ -40,7 +38,14 @@ public:
   basis_t basis_vectors() const { return basis_; }
   double volume() const { return std::abs(basis_.determinant()); }
   std::string name() const { return name_; }
-      
+
+  static basis simple(std::size_t dim) {
+    return basis(basis_t::Identity(dim, dim), "simple");
+  }
+  static basis simple(std::size_t dim, const std::string& name) {
+    return basis(basis_t::Identity(dim, dim), name);
+  }
+  
 private:
   basis_t basis_;
   std::string name_;

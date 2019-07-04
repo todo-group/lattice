@@ -17,7 +17,6 @@
 #ifndef LATTICE_UNITCELL_HPP
 #define LATTICE_UNITCELL_HPP
 
-#include "basis.hpp"
 #include "types.hpp"
 
 namespace lattice {
@@ -41,22 +40,11 @@ public:
   };
 
   unitcell() {}
-  explicit unitcell(std::size_t dim) : basis_(dim) {
-    coordinate_t pos = coordinate_t::Zero(dim);
-    add_site(pos, 0);
-    for (std::size_t m = 0; m < dim; ++m) {
-      offset_t os = offset_t::Zero(dim);
-      os(m) = 1;
-      add_bond(0, 0, os, 0);
-    }
-  }
-  explicit unitcell(const basis& bs) : basis_(bs) {}
+  explicit unitcell(std::size_t dim) : dim_(dim) {}
   unitcell(const unitcell& cell, const extent_t& extent);
   unitcell(const unitcell& cell, const span_t& span);
 
-  std::size_t dimension() const { return basis_.dimension(); }
-  double volume() const { return basis_.volume(); }
-  basis_t basis_vectors() const { return basis_.basis_vectors(); }
+  std::size_t dimension() const { return dim_; }
   std::size_t num_sites() const { return sites_.size(); }
   std::size_t num_bonds() const { return bonds_.size(); }
   const site_t& site(std::size_t s) const { return sites_[s]; }
@@ -92,8 +80,20 @@ public:
     return b;
   }
 
+  static unitcell simple(std::size_t dim) {
+    unitcell cell(dim);
+    coordinate_t pos = coordinate_t::Zero(dim);
+    cell.add_site(pos, 0);
+    for (std::size_t m = 0; m < dim; ++m) {
+      offset_t os = offset_t::Zero(dim);
+      os(m) = 1;
+      cell.add_bond(0, 0, os, 0);
+    }
+    return cell;
+  }
+
 private:
-  basis basis_;
+  std::size_t dim_;
   std::vector<site_t> sites_;
   std::vector<bond_t> bonds_;
 };

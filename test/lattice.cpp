@@ -18,7 +18,7 @@
 #include "lattice/lattice.hpp"
 
 TEST(LatticeTest, Chain) {
-  lattice::lattice lat(1, 10);
+  lattice::lattice lat = lattice::lattice::simple(1, 10);
   std::cout << "dimension: " << lat.dimension() << std::endl
             << "number of sites: " << lat.num_sites() << std::endl
             << "number of bonds: " << lat.num_bonds() << std::endl;
@@ -67,7 +67,7 @@ TEST(LatticeTest, Chain) {
 }
 
 TEST(LatticeTest, SimpleSquare) {
-  lattice::lattice lat(2, 4);
+  lattice::lattice lat = lattice::lattice::simple(2, 4);
   std::cout << "dimension: " << lat.dimension() << std::endl
             << "number of sites: " << lat.num_sites() << std::endl
             << "number of bonds: " << lat.num_bonds() << std::endl;
@@ -116,7 +116,7 @@ TEST(LatticeTest, SimpleSquare) {
 }
 
 TEST(LatticeTest, SimpleCubic) {
-  lattice::lattice lat(3, 3);
+  lattice::lattice lat = lattice::lattice::simple(3, 4);
   std::cout << "dimension: " << lat.dimension() << std::endl
             << "number of sites: " << lat.num_sites() << std::endl
             << "number of bonds: " << lat.num_bonds() << std::endl;

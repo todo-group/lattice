@@ -21,7 +21,10 @@ using boost::property_tree::ptree;
 
 class BasisIoTest : public testing::Test {
 public:
-  BasisIoTest() : basis1(1, "chain lattice"), basis2(2, "square lattice") {}
+  BasisIoTest() {
+    basis1 = lattice::basis::simple(1, "chain lattice");
+    basis2 = lattice::basis::simple(2, "square lattice");
+  }
 protected:
   lattice::basis basis1, basis2;
 };
@@ -51,4 +54,10 @@ TEST_F(BasisIoTest, ReadXML) {
   }
   EXPECT_EQ(basis1.basis_vectors(), lattices[basis1.name()].basis_vectors());
   EXPECT_EQ(basis2.basis_vectors(), lattices[basis2.name()].basis_vectors());
+
+  lattice::basis bs;
+  read_xml(pt, "chain lattice", bs);
+  EXPECT_EQ(basis1.basis_vectors(), bs.basis_vectors());
+  read_xml(pt, "square lattice", bs);
+  EXPECT_EQ(basis2.basis_vectors(), bs.basis_vectors());
 }

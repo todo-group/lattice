@@ -18,9 +18,9 @@
 #define LATTICE_BASIS_XML_HPP
 
 #include <sstream>
+#include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/lexical_cast.hpp>
 #include "basis.hpp"
 
 namespace lattice {
@@ -38,12 +38,12 @@ ptree& operator>>(ptree& pt, basis& bs) {
       basis_v.push_back(std::vector<double>());
       std::istringstream is(child.second.data());
       std::string s;
-      while (is >> s) basis_v.back().push_back(boost::lexical_cast<double>(s));
+      while (is >> s) basis_v.back().push_back(stod(s));
     }
   }
   std::size_t dim;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
-    dim = boost::lexical_cast<std::size_t>(str.get());
+    dim = stoi(str.get());
   } else {
     dim = basis_v.size();
   }
@@ -79,6 +79,20 @@ ptree& operator<<(ptree& pt, const basis& bs) {
     basis.add("VECTOR", os.str());
   }
   return pt;
+}
+
+bool read_xml(ptree& pt, const std::string& name, basis& bs) {
+  for (auto& child : pt.get_child("LATTICES")) {
+    if (child.first == "LATTICE") {
+      if (auto str = child.second.get_optional<std::string>("<xmlattr>.name")) {
+        if (str.get() == name) {
+          child.second >> bs;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
   
 } // end namespace lattice

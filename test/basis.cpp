@@ -18,7 +18,7 @@
 #include "lattice/basis.hpp"
 
 TEST(BasisTest, SimpleBasis0) {
-  lattice::basis basis(0);
+  lattice::basis basis = lattice::basis::simple(0);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   EXPECT_EQ(0, basis.dimension());
@@ -37,7 +37,7 @@ TEST(BasisTest, SimpleBasis2) {
 }
 
 TEST(BasisTest, SimpleBasis3) {
-  lattice::basis basis(3);
+  lattice::basis basis = lattice::basis::simple(3);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   std::cout << basis.volume() << std::endl;

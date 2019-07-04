@@ -18,8 +18,9 @@
 #define LATTICE_LATTICE_HPP
 
 #include <vector>
-#include "supercell.hpp"
+#include "basis.hpp"
 #include "unitcell.hpp"
+#include "supercell.hpp"
 
 namespace lattice {
 
@@ -39,29 +40,31 @@ public:
     std::size_t source, target;
     int type;
   };
-
+  
   lattice() {}
-  lattice(std::size_t dim, std::size_t length) {
-    init(unitcell(dim), supercell(dim, length), std::vector<boundary_t>(dim, boundary_t::periodic));
-  }
-  lattice(std::size_t dim, const extent_t& extent) {
-    init(unitcell(dim), supercell(extent), std::vector<boundary_t>(dim, boundary_t::periodic));
-  }
-  lattice(const unitcell& cell, std::size_t length) {
-    init(cell, supercell(cell.dimension(), length),
+  lattice(const basis& bs, const unitcell& cell, std::size_t length) {
+    init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const unitcell& cell, const extent_t& extent) {
-    init(cell, supercell(extent), std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  lattice(const basis& bs, const unitcell& cell, const extent_t& extent) {
+    init(bs, cell, supercell(extent),
+         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const unitcell& cell, const extent_t& extent, const std::vector<boundary_t>& boundary) {
-    init(cell, supercell(extent), boundary);
+  lattice(const basis& bs, const unitcell& cell, const extent_t& extent,
+          const std::vector<boundary_t>& boundary) {
+    init(bs, cell, supercell(extent), boundary);
   }
-  lattice(const unitcell& cell, const span_t& span, const std::vector<boundary_t>& boundary) {
-    init(cell, supercell(span), boundary);
+  lattice(const basis& bs, const unitcell& cell, const span_t& span) {
+    init(bs, cell, supercell(span),
+         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-
-  void init(const unitcell& cell, const supercell& super, const std::vector<boundary_t>& boundary) {
+  lattice(const basis& bs, const unitcell& cell, const span_t& span,
+          const std::vector<boundary_t>& boundary) {
+    init(bs, cell, supercell(span), boundary);
+  }
+  
+  void init(const basis& bs, const unitcell& cell, const supercell& super,
+            const std::vector<boundary_t>& boundary) {
     if (cell.dimension() != super.dimension() || cell.dimension() != boundary.size())
       throw std::invalid_argument("dimension mismatch");
 
@@ -73,7 +76,7 @@ public:
     for (std::size_t c = 0; c < super.num_cells(); ++c) {
       auto cell_offset = super.offset(c);
       for (std::size_t t = 0; t < cell.num_sites(); ++t) {
-        coordinate_t pos = cell.basis_vectors() *
+        coordinate_t pos = bs.basis_vectors() *
           (cell_offset.cast<double>() + cell.site(t).coordinate);
         add_site(cell.site(t).type, pos);
       }
@@ -132,7 +135,11 @@ public:
   std::pair<std::size_t, std::size_t> edge_sites(std::size_t b) const {
     return std::make_pair(bonds_[b].source, bonds_[b].target);
   }
-      
+
+  static lattice simple(std::size_t dim, std::size_t length) {
+    return lattice(basis::simple(dim), unitcell::simple(dim), length);
+  }
+  
 private:
   std::size_t dim_;
   std::vector<site_t> sites_;

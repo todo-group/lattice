@@ -17,9 +17,8 @@
 #include "gtest/gtest.h"
 #include "lattice/unitcell.hpp"
 
-TEST(UnitcellTest, SimpleSquare) {
-  lattice::basis basis(2);
-  lattice::unitcell unitcell(basis);
+TEST(UnitcellTest, SimpleSquare1) {
+  lattice::unitcell unitcell(2);
   lattice::coordinate_t pos(2); pos << 0.0, 0.0;
   auto s0 = unitcell.add_site(pos, 0);
   lattice::offset_t offset_x(2); offset_x << 1, 0;
@@ -34,7 +33,19 @@ TEST(UnitcellTest, SimpleSquare) {
   EXPECT_EQ(0, unitcell.bond(0).target);
   EXPECT_EQ(0, unitcell.bond(1).source);
   EXPECT_EQ(0, unitcell.bond(1).target);
-  EXPECT_DOUBLE_EQ(1.0, unitcell.volume());
   EXPECT_EQ(4, unitcell.max_neighbors());
-  // EXPECT_ANY_THROW(unitcell.add_bond(0, 1, offset_x, 0));
+  EXPECT_ANY_THROW(unitcell.add_bond(0, 1, offset_x, 0));
+}
+
+TEST(UnitcellTest, SimpleSquare2) {
+  lattice::unitcell unitcell = lattice::unitcell::simple(2);
+
+  EXPECT_EQ(2, unitcell.dimension());
+  EXPECT_EQ(1, unitcell.num_sites());
+  EXPECT_EQ(2, unitcell.num_bonds());
+  EXPECT_EQ(0, unitcell.bond(0).source);
+  EXPECT_EQ(0, unitcell.bond(0).target);
+  EXPECT_EQ(0, unitcell.bond(1).source);
+  EXPECT_EQ(0, unitcell.bond(1).target);
+  EXPECT_EQ(4, unitcell.max_neighbors());
 }
