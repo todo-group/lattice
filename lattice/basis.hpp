@@ -1,11 +1,18 @@
-/*****************************************************************************
-*
-* Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+/*
+   Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #ifndef LATTICE_BASIS_HPP
 #define LATTICE_BASIS_HPP
@@ -18,8 +25,10 @@ namespace lattice {
 class basis {
 public:
   basis() {}
-  explicit basis(const basis_t& bs) { set_basis(bs); }
-  explicit basis(std::size_t dim) { set_basis(basis_t::Identity(dim, dim)); }
+  explicit basis(const basis_t& bs, const std::string& name = "") : name_(name) { set_basis(bs); }
+  explicit basis(std::size_t dim, const std::string& name = "") : name_(name) {
+    set_basis(basis_t::Identity(dim, dim));
+  }
   void clear() { *this = basis(); }
   
   void set_basis(const basis_t& bs) {
@@ -30,9 +39,11 @@ public:
   std::size_t dimension() const { return basis_.rows(); }
   basis_t basis_vectors() const { return basis_; }
   double volume() const { return std::abs(basis_.determinant()); }
+  std::string name() const { return name_; }
       
 private:
   basis_t basis_;
+  std::string name_;
 };
 
 std::size_t dimension(const basis& bs) {

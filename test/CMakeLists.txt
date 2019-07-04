@@ -1,4 +1,9 @@
+# Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+
 set(PROGS basis unitcell supercell lattice)
+if(Boost_FOUND)
+  list(APPEND PROGS basis_xml)
+endif(Boost_FOUND)
 foreach(name ${PROGS})
   set(target_name test_${name})
   add_executable(${target_name} ${name}.cpp)
