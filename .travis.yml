@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
       - libeigen3-dev
+      - libboost-all-dev
 
 script:
   - mkdir build
