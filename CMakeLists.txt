@@ -24,3 +24,4 @@ include_directories(tools/googletest/include)
 enable_testing()
 
 add_subdirectory(test)
+add_subdirectory(example)
