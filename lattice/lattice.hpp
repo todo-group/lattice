@@ -84,9 +84,17 @@ public:
           const std::vector<boundary_t>& boundary) : name_(cell.name()) {
     init(bs, cell, supercell(span), boundary);
   }
+  lattice(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) :
+    name_(cell.name()) {
+    init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
+  }
   lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
           const std::vector<boundary_t>& boundary) : name_(name) {
     init(bs, cell, supercell(span), boundary);
+  }
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
+          boundary_t boundary) : name_(name) {
+    init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   
   void init(const basis& bs, const unitcell& cell, const supercell& super,
@@ -111,9 +119,16 @@ public:
       for (std::size_t u = 0; u < cell.num_bonds(); ++u) {
         std::size_t b = bonds_.size();
         std::size_t s = c * cell.num_sites() + cell.bond(u).source;
-        std::size_t t = super.add_offset(c, cell.bond(u).target_offset).first *
-          cell.num_sites() + cell.bond(u).target;
-        add_bond(s, t, cell.bond(u).type);
+        std::size_t target_cell;
+        offset_t cross;
+        std::tie(target_cell, cross) = super.add_offset(c, cell.bond(u).target_offset);
+        bool valid = true;
+        for (std::size_t m = 0; m < dim_; ++m)
+          if (boundary[m] == boundary_t::open && cross(m) != 0) valid = false;
+        if (valid) {
+          std::size_t t = target_cell * cell.num_sites() + cell.bond(u).target;
+          add_bond(s, t, cell.bond(u).type);
+        }
       }
     }
   }
@@ -165,6 +180,23 @@ public:
 
   static lattice simple(std::size_t dim, std::size_t length) {
     return lattice(basis::simple(dim), unitcell::simple(dim), length);
+  }
+
+  void print(std::ostream& os) const {
+    std::cout << "name: " << name() << std::endl
+              << "dimension: " << dimension() << std::endl
+              << "number of sites: " << num_sites() << std::endl
+              << "number of bonds: " << num_bonds() << std::endl;
+    for (std::size_t s = 0; s < num_sites(); ++s) {
+      std::cout << "site: " << s << " type: " << site_type(s) << ' '
+                << "( " << coordinate(s).transpose() << " ) neighbors[ ";
+      for (std::size_t k = 0; k < num_neighbors(s); ++k)
+        std::cout << neighbor(s, k) << ' ';
+      std::cout << "] neighbor_bonds[ ";
+      for (std::size_t k = 0; k < num_neighbors(s); ++k)
+        std::cout << neighbor_bond(s, k) << ' ';
+      std::cout << "]\n";
+    }
   }
   
 private:

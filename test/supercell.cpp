@@ -17,13 +17,24 @@
 #include "gtest/gtest.h"
 #include "lattice/supercell.hpp"
 
-TEST(SupercellTest, TwoD) {
+void check(const lattice::supercell& supercell) {
+  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
+    EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
+  }
+  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
+    auto offset = supercell.lcord2offset(supercell.index2lcord(i));
+    //// std::cout << i << ' ' << supercell.index2lcord(i) << " (" << offset.transpose() << ") " << supercell.offset2lcord(offset) << std::endl;
+    EXPECT_EQ(i, supercell.lcord2index(supercell.offset2lcord(offset)));
+  }
+}
+
+TEST(SupercellTest, TwoD1) {
   lattice::span_t span(2, 2);
   span << 4, 2,
           1, 3;
   lattice::supercell supercell(span);
   lattice::offset_t offset(2);
-  
+
   // within_supercell
   offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
   offset << 1, 1; EXPECT_TRUE(supercell.within_supercell(offset));
@@ -41,14 +52,8 @@ TEST(SupercellTest, TwoD) {
   offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
   offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
 
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
-  }
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    auto offset = supercell.lcord2offset(supercell.index2lcord(i));
-    EXPECT_EQ(i, supercell.lcord2index(supercell.offset2lcord(offset)));
-  }
-  
+  check(supercell);
+
   std::size_t source, target, target_r;
   lattice::offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 7; crossing << 0, -1;
@@ -61,10 +66,145 @@ TEST(SupercellTest, TwoD) {
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
 }
 
+TEST(SupercellTest, TwoD2) {
+  lattice::span_t span(2, 2);
+  span << 4, -1,
+          1, 3;
+  lattice::supercell supercell(span);
+  lattice::offset_t offset(2);
+
+  EXPECT_EQ(13, supercell.num_cells());
+  
+  // within_supercell
+  offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 3; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 3; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 0, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 3, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+
+  check(supercell);
+
+  std::size_t source, target, target_r;
+  lattice::offset_t crossing(2), crossing_r(2);
+  source = 0; offset << 1, 0; target = 9; crossing << 0, -1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 4; offset << -1, -1; target = 10; crossing << 0, -1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 1; offset << 4, 0; target = 0; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 3, 1; target = 6; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 1, 3; target = 1; crossing << 1, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+}
+
+TEST(SupercellTest, TwoD3) {
+  lattice::span_t span(2, 2);
+  span << -1, 4,
+           3, 1;
+  lattice::supercell supercell(span);
+  lattice::offset_t offset(2);
+
+  EXPECT_EQ(13, supercell.num_cells());
+  
+  // within_supercell
+  offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 3; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 3; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 3; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 0, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 3, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+
+  check(supercell);
+
+  std::size_t source, target, target_r;
+  lattice::offset_t crossing(2), crossing_r(2);
+  source = 0; offset << 1, 0; target = 9; crossing << -1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 4; offset << -1, -1; target = 10; crossing << -1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 1; offset << 4, 0; target = 0; crossing << 0, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 3, 1; target = 6; crossing << 0, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 1, 3; target = 1; crossing << 1, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+}
+
+TEST(SupercellTest, TwoD4) {
+  lattice::span_t span(2, 2);
+  span << 4, -1,
+          1,  4;
+  lattice::supercell supercell(span);
+  lattice::offset_t offset(2);
+
+  EXPECT_EQ(17, supercell.num_cells());
+  
+  // within_supercell
+  offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 1; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 2; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, 4; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 3, 4; EXPECT_TRUE(supercell.within_supercell(offset));
+  offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 1; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 2; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << -1, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 4, 4; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 0, 5; EXPECT_FALSE(supercell.within_supercell(offset));
+  offset << 3, 5; EXPECT_FALSE(supercell.within_supercell(offset));
+
+  check(supercell);
+
+  std::size_t source, target, target_r;
+  lattice::offset_t crossing(2), crossing_r(2);
+  source = 0; offset << 1, 0; target = 13; crossing << 0, -1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 4; offset << -1, -1; target = 14; crossing << 0, -1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 1; offset << 4, 0; target = 0; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 3, 1; target = 6; crossing << 1, 0;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+  source = 7; offset << 1, 3; target = 0; crossing << 1, 1;
+  EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
+}
+
 TEST(SupercellTest, TwoDSimple) {
   lattice::supercell supercell(2, 4);
   lattice::offset_t offset(2);
-  
+
   // within_supercell
   offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
   offset << 0, 3; EXPECT_TRUE(supercell.within_supercell(offset));
@@ -77,14 +217,8 @@ TEST(SupercellTest, TwoDSimple) {
   offset << 0, -1; EXPECT_FALSE(supercell.within_supercell(offset));
   offset << -1, 0; EXPECT_FALSE(supercell.within_supercell(offset));
 
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
-  }
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    auto offset = supercell.lcord2offset(supercell.index2lcord(i));
-    EXPECT_EQ(i, supercell.lcord2index(supercell.offset2lcord(offset)));
-  }
-  
+  check(supercell);
+
   std::size_t source, target, target_r;
   lattice::offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 1; crossing << 0, 0;
@@ -105,14 +239,8 @@ TEST(SupercellTest, ThreeD) {
   lattice::supercell supercell(span);
   lattice::offset_t offset(3);
 
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
-  }
-  for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
-    auto offset = supercell.lcord2offset(supercell.index2lcord(i));
-    EXPECT_EQ(i, supercell.lcord2index(supercell.offset2lcord(offset)));
-  }
-  
+  check(supercell);
+
   std::size_t source, target, target_r;
   source = 0; offset << 1, 0, 0; target = 12;
   EXPECT_EQ(target, supercell.add_offset(source, offset).first);
