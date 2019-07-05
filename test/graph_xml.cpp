@@ -15,20 +15,21 @@
 */
 
 #include "gtest/gtest.h"
-#include "lattice/lattice_xml.hpp"
+#include "lattice/graph_xml.hpp"
 
+using namespace lattice;
 using boost::property_tree::ptree;
 
-TEST(LatticeXMLTest, WriteXML) {
+TEST(GraphXMLTest, WriteXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << lattice::lattice::simple(2, 4);
+  root << graph::simple(2, 4);
   write_xml(std::cerr, pt,
     boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
 }
 
-TEST(LatticeXMLTest, ReadXML1) {
+TEST(GraphXMLTest, ReadXML1) {
   std::istringstream is(R"(
 <GRAPH name="5-site dimerized" vertices="5">
   <EDGE type="0" source="1" target="2"/>
@@ -42,7 +43,7 @@ TEST(LatticeXMLTest, ReadXML1) {
   ptree& root = pt.put("LATTICES", "");
   read_xml(is, root);
 
-  lattice::lattice lat;
+  graph lat;
   read_xml(pt, "5-site dimerized", lat);
   EXPECT_EQ("5-site dimerized", lat.name());
   EXPECT_EQ(0, lat.dimension());

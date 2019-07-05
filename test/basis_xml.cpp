@@ -17,16 +17,17 @@
 #include "gtest/gtest.h"
 #include "lattice/basis_xml.hpp"
 
+using namespace lattice;
 using boost::property_tree::ptree;
 
 class BasisIoTest : public testing::Test {
 public:
   BasisIoTest() :
-    basis1(lattice::basis::simple("chain lattice", 1)),
-    basis2(lattice::basis::simple("square lattice", 2)) {
+    basis1(basis::simple("chain lattice", 1)),
+    basis2(basis::simple("square lattice", 2)) {
   }
 protected:
-  lattice::basis basis1, basis2;
+  basis basis1, basis2;
 };
 
 TEST_F(BasisIoTest, WriteXML) {
@@ -44,10 +45,10 @@ TEST_F(BasisIoTest, ReadXML) {
 
   root << basis1 << basis2;
 
-  std::map<std::string, lattice::basis> lattices;
+  std::map<std::string, basis> lattices;
   for (auto& child : pt.get_child("LATTICES")) {
     if (child.first == "LATTICE") {
-      lattice::basis bs;
+      basis bs;
       child.second >> bs;
       lattices[bs.name()] = bs;
     }
@@ -55,7 +56,7 @@ TEST_F(BasisIoTest, ReadXML) {
   EXPECT_EQ(basis1.basis_vectors(), lattices[basis1.name()].basis_vectors());
   EXPECT_EQ(basis2.basis_vectors(), lattices[basis2.name()].basis_vectors());
 
-  lattice::basis bs;
+  basis bs;
   read_xml(pt, "chain lattice", bs);
   EXPECT_EQ(basis1.basis_vectors(), bs.basis_vectors());
   read_xml(pt, "square lattice", bs);

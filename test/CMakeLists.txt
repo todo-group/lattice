@@ -1,8 +1,8 @@
 # Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
-set(PROGS basis extent unitcell supercell lattice)
+set(PROGS basis extent unitcell supercell graph)
 if(Boost_FOUND)
-  list(APPEND PROGS basis_xml unitcell_xml lattice_xml)
+  list(APPEND PROGS basis_xml unitcell_xml graph_xml)
 endif(Boost_FOUND)
 foreach(name ${PROGS})
   set(target_name test_${name})

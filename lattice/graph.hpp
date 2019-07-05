@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef LATTICE_LATTICE_HPP
-#define LATTICE_LATTICE_HPP
+#ifndef LATTICE_GRAPH_HPP
+#define LATTICE_GRAPH_HPP
 
 #include <exception>
 #include <vector>
@@ -25,7 +25,7 @@
 
 namespace lattice {
 
-class lattice {
+class graph {
 public:
   struct site_t {
     site_t() {}
@@ -42,57 +42,57 @@ public:
     int type;
   };
   
-  lattice() : name_("unknown"), dim_(0) {}
-  explicit lattice(std::size_t dim) : name_("unknown"), dim_(dim) {}
-  lattice(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
-  lattice(const basis& bs, const unitcell& cell, std::size_t length) : name_(cell.name()) {
+  graph() : name_("unknown"), dim_(0) {}
+  explicit graph(std::size_t dim) : name_("unknown"), dim_(dim) {}
+  graph(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
+  graph(const basis& bs, const unitcell& cell, std::size_t length) : name_(cell.name()) {
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, std::size_t length) :
+  graph(const std::string& name, const basis& bs, const unitcell& cell, std::size_t length) :
     name_(name) {
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const basis& bs, const unitcell& cell, const extent_t& extent) : name_(cell.name()) {
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent) : name_(cell.name()) {
     init(bs, cell, supercell(extent),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent) :
+  graph(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent) :
     name_(name) {
     init(bs, cell, supercell(extent),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const basis& bs, const unitcell& cell, const extent_t& extent,
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent,
           const std::vector<boundary_t>& boundary) : name_(cell.name()) {
     init(bs, cell, supercell(extent), boundary);
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent,
+  graph(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent,
           const std::vector<boundary_t>& boundary) : name_(name) {
     init(bs, cell, supercell(extent), boundary);
   }
-  lattice(const basis& bs, const unitcell& cell, const span_t& span) : name_(cell.name()) {
+  graph(const basis& bs, const unitcell& cell, const span_t& span) : name_(cell.name()) {
     init(bs, cell, supercell(span),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span) :
+  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span) :
     name_(name) {
     init(bs, cell, supercell(span),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const basis& bs, const unitcell& cell, const span_t& span,
+  graph(const basis& bs, const unitcell& cell, const span_t& span,
           const std::vector<boundary_t>& boundary) : name_(cell.name()) {
     init(bs, cell, supercell(span), boundary);
   }
-  lattice(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) :
+  graph(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) :
     name_(cell.name()) {
     init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
+  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
           const std::vector<boundary_t>& boundary) : name_(name) {
     init(bs, cell, supercell(span), boundary);
   }
-  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
+  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
           boundary_t boundary) : name_(name) {
     init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
@@ -178,8 +178,8 @@ public:
     return std::make_pair(bonds_[b].source, bonds_[b].target);
   }
 
-  static lattice simple(std::size_t dim, std::size_t length) {
-    return lattice(basis::simple(dim), unitcell::simple(dim), length);
+  static graph simple(std::size_t dim, std::size_t length) {
+    return graph(basis::simple(dim), unitcell::simple(dim), length);
   }
 
   void print(std::ostream& os) const {
@@ -209,4 +209,4 @@ private:
 
 } // end namespace lattice
 
-#endif // LATTICE_LATTICE_HPP
+#endif // LATTICE_GRAPH_HPP

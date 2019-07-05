@@ -15,9 +15,11 @@
 */
 
 #include "gtest/gtest.h"
-#include "lattice/lattice.hpp"
+#include "lattice/graph.hpp"
 
-void check(const lattice::lattice& lat) {
+using namespace lattice;
+
+void check(const graph& lat) {
   for (std::size_t s = 0; s < lat.num_sites(); ++s) {
     for (unsigned int k = 0; k < lat.num_neighbors(s); ++k) {
       EXPECT_TRUE(lat.source(lat.neighbor_bond(s, k)) == s ||
@@ -60,42 +62,42 @@ void check(const lattice::lattice& lat) {
   }
 }
 
-TEST(LatticeTest, Chain) {
-  lattice::lattice lat = lattice::lattice::simple(1, 10);
+TEST(GraphTest, Chain) {
+  graph lat = graph::simple(1, 10);
   lat.print(std::cout);
   check(lat);
 }
 
-TEST(LatticeTest, SimpleSquare) {
-  lattice::lattice lat = lattice::lattice::simple(2, 4);
+TEST(GraphTest, SimpleSquare) {
+  graph lat = graph::simple(2, 4);
   lat.print(std::cout);
   check(lat);
 }
 
-TEST(LatticeTest, SimpleCubic) {
-  lattice::lattice lat = lattice::lattice::simple(3, 4);
+TEST(GraphTest, SimpleCubic) {
+  graph lat = graph::simple(3, 4);
   lat.print(std::cout);
   check(lat);
 }
 
-TEST(LatticeTest, SkewedSquare) {
-  lattice::basis bs = lattice::basis::simple(2);
-  lattice::unitcell cell = lattice::unitcell::simple(2);
-  lattice::span_t span(2, 2);
+TEST(GraphTest, SkewedSquare) {
+  basis bs = basis::simple(2);
+  unitcell cell = unitcell::simple(2);
+  span_t span(2, 2);
   span << 4, -1,
           1,  3;
-  lattice::lattice lat("skewed square", bs, cell, span);
+  graph lat("skewed square", bs, cell, span);
   lat.print(std::cout);
   check(lat);
 }
 
-TEST(LatticeTest, SkewedSquareOpen) {
-  lattice::basis bs = lattice::basis::simple(2);
-  lattice::unitcell cell = lattice::unitcell::simple(2);
-  lattice::span_t span(2, 2);
+TEST(GraphTest, SkewedSquareOpen) {
+  basis bs = basis::simple(2);
+  unitcell cell = unitcell::simple(2);
+  span_t span(2, 2);
   span << 4, -1,
           1,  4;
-  lattice::lattice lat("skewed square", bs, cell, span, lattice::boundary_t::open);
+  graph lat("skewed square", bs, cell, span, boundary_t::open);
   lat.print(std::cout);
   check(lat);
 }

@@ -14,20 +14,20 @@
    limitations under the License.
 */
 
-#ifndef LATTICE_UNITCELL_XML_HPP
-#define LATTICE_UNITCELL_XML_HPP
+#ifndef LATTICE_GRAPH_XML_HPP
+#define LATTICE_GRAPH_XML_HPP
 
 #include <sstream>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include "lattice.hpp"
+#include "graph.hpp"
 
 namespace lattice {
 
 using boost::property_tree::ptree;
 
-ptree& operator>>(ptree& pt, lattice& lat) {
+ptree& operator>>(ptree& pt, graph& lat) {
   std::string name;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.name")) {
     name = str.get();
@@ -36,7 +36,7 @@ ptree& operator>>(ptree& pt, lattice& lat) {
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
     dim = stoi(str.get());
   }
-  lat = lattice(name, dim);
+  lat = graph(name, dim);
 
   std::size_t ns = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.vertices")) ns = stoi(str.get());
@@ -94,7 +94,7 @@ ptree& operator>>(ptree& pt, lattice& lat) {
   return pt;
 }
 
-ptree& operator<<(ptree& pt, const lattice& lat) {
+ptree& operator<<(ptree& pt, const graph& lat) {
   ptree& root = pt.add("GRAPH", "");
   root.put("<xmlattr>.name", lat.name());
   if (lat.dimension() > 0) root.put("<xmlattr>.dimension", lat.dimension());
@@ -119,7 +119,7 @@ ptree& operator<<(ptree& pt, const lattice& lat) {
   return pt;
 }
 
-bool read_xml(ptree& pt, const std::string& name, lattice& lat) {
+bool read_xml(ptree& pt, const std::string& name, graph& lat) {
   for (auto& child : pt.get_child("LATTICES")) {
     if (child.first == "GRAPH") {
       if (auto str = child.second.get_optional<std::string>("<xmlattr>.name")) {

@@ -17,18 +17,20 @@
 #include "gtest/gtest.h"
 #include "lattice/basis.hpp"
 
+using namespace lattice;
+
 TEST(BasisTest, SimpleBasis0) {
-  lattice::basis basis = lattice::basis::simple(0);
+  basis basis = basis::simple(0);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   EXPECT_EQ(0, basis.dimension());
 }
 
 TEST(BasisTest, SimpleBasis2) {
-  lattice::basis_t bs(2, 2);
+  basis_t bs(2, 2);
   bs << 1, 0,
         0, 1.5;
-  lattice::basis basis("simple2d", bs);
+  basis basis("simple2d", bs);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   std::cout << basis.volume() << std::endl;
@@ -37,7 +39,7 @@ TEST(BasisTest, SimpleBasis2) {
 }
 
 TEST(BasisTest, SimpleBasis3) {
-  lattice::basis basis = lattice::basis::simple(3);
+  basis basis = basis::simple(3);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   std::cout << basis.volume() << std::endl;

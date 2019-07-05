@@ -17,7 +17,9 @@
 #include "gtest/gtest.h"
 #include "lattice/supercell.hpp"
 
-void check(const lattice::supercell& supercell) {
+using namespace lattice;
+
+void check(const supercell& supercell) {
   for (std::size_t i = 0; i < supercell.num_cells(); ++i) {
     EXPECT_EQ(i, supercell.lcord2index(supercell.index2lcord(i)));
   }
@@ -29,11 +31,11 @@ void check(const lattice::supercell& supercell) {
 }
 
 TEST(SupercellTest, TwoD1) {
-  lattice::span_t span(2, 2);
+  span_t span(2, 2);
   span << 4, 2,
           1, 3;
-  lattice::supercell supercell(span);
-  lattice::offset_t offset(2);
+  supercell supercell(span);
+  offset_t offset(2);
 
   // within_supercell
   offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
@@ -55,7 +57,7 @@ TEST(SupercellTest, TwoD1) {
   check(supercell);
 
   std::size_t source, target, target_r;
-  lattice::offset_t crossing(2), crossing_r(2);
+  offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 7; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 3; offset << -1, -1; target = 8; crossing << 0, -1;
@@ -67,11 +69,11 @@ TEST(SupercellTest, TwoD1) {
 }
 
 TEST(SupercellTest, TwoD2) {
-  lattice::span_t span(2, 2);
+  span_t span(2, 2);
   span << 4, -1,
           1, 3;
-  lattice::supercell supercell(span);
-  lattice::offset_t offset(2);
+  supercell supercell(span);
+  offset_t offset(2);
 
   EXPECT_EQ(13, supercell.num_cells());
   
@@ -98,7 +100,7 @@ TEST(SupercellTest, TwoD2) {
   check(supercell);
 
   std::size_t source, target, target_r;
-  lattice::offset_t crossing(2), crossing_r(2);
+  offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 9; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 4; offset << -1, -1; target = 10; crossing << 0, -1;
@@ -112,11 +114,11 @@ TEST(SupercellTest, TwoD2) {
 }
 
 TEST(SupercellTest, TwoD3) {
-  lattice::span_t span(2, 2);
+  span_t span(2, 2);
   span << -1, 4,
            3, 1;
-  lattice::supercell supercell(span);
-  lattice::offset_t offset(2);
+  supercell supercell(span);
+  offset_t offset(2);
 
   EXPECT_EQ(13, supercell.num_cells());
   
@@ -143,7 +145,7 @@ TEST(SupercellTest, TwoD3) {
   check(supercell);
 
   std::size_t source, target, target_r;
-  lattice::offset_t crossing(2), crossing_r(2);
+  offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 9; crossing << -1, 0;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 4; offset << -1, -1; target = 10; crossing << -1, 0;
@@ -157,11 +159,11 @@ TEST(SupercellTest, TwoD3) {
 }
 
 TEST(SupercellTest, TwoD4) {
-  lattice::span_t span(2, 2);
+  span_t span(2, 2);
   span << 4, -1,
           1,  4;
-  lattice::supercell supercell(span);
-  lattice::offset_t offset(2);
+  supercell supercell(span);
+  offset_t offset(2);
 
   EXPECT_EQ(17, supercell.num_cells());
   
@@ -188,7 +190,7 @@ TEST(SupercellTest, TwoD4) {
   check(supercell);
 
   std::size_t source, target, target_r;
-  lattice::offset_t crossing(2), crossing_r(2);
+  offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 13; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 4; offset << -1, -1; target = 14; crossing << 0, -1;
@@ -202,8 +204,8 @@ TEST(SupercellTest, TwoD4) {
 }
 
 TEST(SupercellTest, TwoDSimple) {
-  lattice::supercell supercell(lattice::extent(4, 4));
-  lattice::offset_t offset(2);
+  supercell supercell(extent(4, 4));
+  offset_t offset(2);
 
   // within_supercell
   offset << 0, 0; EXPECT_TRUE(supercell.within_supercell(offset));
@@ -220,7 +222,7 @@ TEST(SupercellTest, TwoDSimple) {
   check(supercell);
 
   std::size_t source, target, target_r;
-  lattice::offset_t crossing(2), crossing_r(2);
+  offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 1; crossing << 0, 0;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
   source = 3; offset << 1, 0; target = 0; crossing << 1, 0;
@@ -232,12 +234,12 @@ TEST(SupercellTest, TwoDSimple) {
 }
 
 TEST(SupercellTest, ThreeD) {
-  lattice::span_t span(3, 3);
+  span_t span(3, 3);
   span << 4, 0, 0,
           2, 4, 0,
           0, 0, 4;
-  lattice::supercell supercell(span);
-  lattice::offset_t offset(3);
+  supercell supercell(span);
+  offset_t offset(3);
 
   check(supercell);
 

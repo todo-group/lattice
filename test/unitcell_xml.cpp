@@ -18,18 +18,19 @@
 #include "gtest/gtest.h"
 #include "lattice/unitcell_xml.hpp"
 
+using namespace lattice;
 using boost::property_tree::ptree;
 
 TEST(UnitcellXMLTest, WriteXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << lattice::unitcell::simple(1)
-       << lattice::unitcell::simple(2);
+  root << unitcell::simple(1)
+       << unitcell::simple(2);
   write_xml(std::cerr, pt,
     boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
   
-  lattice::unitcell cell1, cell2;
+  unitcell cell1, cell2;
   read_xml(pt, "simple1d", cell1);
   read_xml(pt, "simple1d", cell2);
 }
@@ -46,7 +47,7 @@ TEST(UnitcellXMLTest, ReadXML1) {
   ptree& root = pt.put("LATTICES", "");
   read_xml(is, root);
 
-  lattice::unitcell cell;
+  unitcell cell;
   read_xml(pt, "simple1d", cell);
   EXPECT_EQ("simple1d", cell.name());
   EXPECT_EQ(1, cell.dimension());
@@ -54,7 +55,7 @@ TEST(UnitcellXMLTest, ReadXML1) {
   EXPECT_EQ(1, cell.num_bonds());
   EXPECT_EQ(0, cell.bond(0).source);
   EXPECT_EQ(0, cell.bond(0).target);
-  lattice::offset_t offset(1);
+  offset_t offset(1);
   offset << 1.0;
   EXPECT_EQ(offset, cell.bond(0).target_offset);
 }
@@ -78,7 +79,7 @@ TEST(UnitcellXMLTest, ReadXML2) {
   ptree& root = pt.put("LATTICES", "");
   read_xml(is, root);
 
-  lattice::unitcell cell;
+  unitcell cell;
   read_xml(pt, "kagome", cell);
   EXPECT_EQ("kagome", cell.name());
   EXPECT_EQ(2, cell.dimension());
@@ -88,7 +89,7 @@ TEST(UnitcellXMLTest, ReadXML2) {
   EXPECT_EQ(1, cell.bond(0).target);
   EXPECT_EQ(0, cell.bond(5).source);
   EXPECT_EQ(2, cell.bond(5).target);
-  lattice::offset_t offset(2);
+  offset_t offset(2);
   offset << 0, -1;
   EXPECT_EQ(offset, cell.bond(5).target_offset);
 }
@@ -107,7 +108,7 @@ TEST(UnitcellXMLTest, ReadXML3) {
   ptree& root = pt.put("LATTICES", "");
   read_xml(is, root);
 
-  lattice::unitcell cell;
+  unitcell cell;
   read_xml(pt, "anisotropic3d", cell);
   EXPECT_EQ("anisotropic3d", cell.name());
   EXPECT_EQ(3, cell.dimension());
@@ -118,7 +119,7 @@ TEST(UnitcellXMLTest, ReadXML3) {
   EXPECT_EQ(0, cell.bond(2).source);
   EXPECT_EQ(0, cell.bond(2).target);
   EXPECT_EQ(2, cell.bond(2).type);
-  lattice::offset_t offset(3);
+  offset_t offset(3);
   offset << 0, 1, 0;
   EXPECT_EQ(offset, cell.bond(1).target_offset);
 }

@@ -17,13 +17,15 @@
 #include "gtest/gtest.h"
 #include "lattice/unitcell.hpp"
 
+using namespace lattice;
+
 TEST(UnitcellTest, SimpleSquare1) {
-  lattice::unitcell unitcell("simple2d", 2);
-  lattice::coordinate_t pos(2); pos << 0.0, 0.0;
+  unitcell unitcell("simple2d", 2);
+  coordinate_t pos(2); pos << 0.0, 0.0;
   auto s0 = unitcell.add_site(pos, 0);
-  lattice::offset_t offset_x(2); offset_x << 1, 0;
+  offset_t offset_x(2); offset_x << 1, 0;
   auto b0 = unitcell.add_bond(s0, s0, offset_x, 0);
-  lattice::offset_t offset_y(2); offset_y << 0, 1;
+  offset_t offset_y(2); offset_y << 0, 1;
   auto b1 = unitcell.add_bond(s0, s0, offset_y, 0);
 
   EXPECT_EQ(2, unitcell.dimension());
@@ -38,7 +40,7 @@ TEST(UnitcellTest, SimpleSquare1) {
 }
 
 TEST(UnitcellTest, SimpleSquare2) {
-  lattice::unitcell unitcell = lattice::unitcell::simple(2);
+  unitcell unitcell = unitcell::simple(2);
 
   EXPECT_EQ(2, unitcell.dimension());
   EXPECT_EQ(1, unitcell.num_sites());
