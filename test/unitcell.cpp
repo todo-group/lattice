@@ -18,7 +18,7 @@
 #include "lattice/unitcell.hpp"
 
 TEST(UnitcellTest, SimpleSquare1) {
-  lattice::unitcell unitcell(2);
+  lattice::unitcell unitcell("simple2d", 2);
   lattice::coordinate_t pos(2); pos << 0.0, 0.0;
   auto s0 = unitcell.add_site(pos, 0);
   lattice::offset_t offset_x(2); offset_x << 1, 0;

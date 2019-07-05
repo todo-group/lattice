@@ -41,25 +41,50 @@ public:
     int type;
   };
   
-  lattice() {}
-  lattice(const basis& bs, const unitcell& cell, std::size_t length) {
+  lattice() : name_("unknown"), dim_(0) {}
+  explicit lattice(std::size_t dim) : name_("unknown"), dim_(dim) {}
+  lattice(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
+  lattice(const basis& bs, const unitcell& cell, std::size_t length) : name_(cell.name()) {
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  lattice(const basis& bs, const unitcell& cell, const extent_t& extent) {
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, std::size_t length) :
+    name_(name) {
+    init(bs, cell, supercell(cell.dimension(), length),
+         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  }
+  lattice(const basis& bs, const unitcell& cell, const extent_t& extent) : name_(cell.name()) {
+    init(bs, cell, supercell(extent),
+         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  }
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent) :
+    name_(name) {
     init(bs, cell, supercell(extent),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
   lattice(const basis& bs, const unitcell& cell, const extent_t& extent,
-          const std::vector<boundary_t>& boundary) {
+          const std::vector<boundary_t>& boundary) : name_(cell.name()) {
     init(bs, cell, supercell(extent), boundary);
   }
-  lattice(const basis& bs, const unitcell& cell, const span_t& span) {
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent,
+          const std::vector<boundary_t>& boundary) : name_(name) {
+    init(bs, cell, supercell(extent), boundary);
+  }
+  lattice(const basis& bs, const unitcell& cell, const span_t& span) : name_(cell.name()) {
+    init(bs, cell, supercell(span),
+         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  }
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span) :
+    name_(name) {
     init(bs, cell, supercell(span),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
   lattice(const basis& bs, const unitcell& cell, const span_t& span,
-          const std::vector<boundary_t>& boundary) {
+          const std::vector<boundary_t>& boundary) : name_(cell.name()) {
+    init(bs, cell, supercell(span), boundary);
+  }
+  lattice(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
+          const std::vector<boundary_t>& boundary) : name_(name) {
     init(bs, cell, supercell(span), boundary);
   }
   
@@ -78,7 +103,7 @@ public:
       for (std::size_t t = 0; t < cell.num_sites(); ++t) {
         coordinate_t pos = bs.basis_vectors() *
           (cell_offset.cast<double>() + cell.site(t).coordinate);
-        add_site(cell.site(t).type, pos);
+        add_site(pos, cell.site(t).type);
       }
     }
     for (std::size_t c = 0; c < super.num_cells(); ++c) {
@@ -92,7 +117,7 @@ public:
     }
   }
 
-  std::size_t add_site(int tp, const coordinate_t& pos) {
+  std::size_t add_site(const coordinate_t& pos, int tp) {
     if (pos.size() != dim_)
       throw std::invalid_argument("dimension mismatch");
     std::size_t s = sites_.size();
@@ -113,6 +138,7 @@ public:
     return b;
   }
       
+  const std::string& name() const { return name_; }
   std::size_t dimension() const { return dim_; }
   
   std::size_t num_sites() const { return sites_.size(); }
@@ -141,6 +167,7 @@ public:
   }
   
 private:
+  std::string name_;
   std::size_t dim_;
   std::vector<site_t> sites_;
   std::vector<coordinate_t> coordinates_;

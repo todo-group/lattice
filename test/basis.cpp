@@ -28,7 +28,7 @@ TEST(BasisTest, SimpleBasis2) {
   lattice::basis_t bs(2, 2);
   bs << 1, 0,
         0, 1.5;
-  lattice::basis basis(bs);
+  lattice::basis basis("simple2d", bs);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   std::cout << basis.volume() << std::endl;

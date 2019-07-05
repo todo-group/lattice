@@ -47,7 +47,6 @@ ptree& operator>>(ptree& pt, basis& bs) {
   } else {
     dim = basis_v.size();
   }
-  // check dimension
   if (dim == 0 || basis_v.size() != dim) {
     throw std::runtime_error("basis dimension mismatch");
   }
@@ -62,7 +61,7 @@ ptree& operator>>(ptree& pt, basis& bs) {
       basis_in(j, i) = basis_v[i][j];
     }
   }
-  bs = basis(basis_in, name);
+  bs = basis(name, basis_in);
   return pt;
 }
 

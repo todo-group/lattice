@@ -21,9 +21,9 @@ using boost::property_tree::ptree;
 
 class BasisIoTest : public testing::Test {
 public:
-  BasisIoTest() {
-    basis1 = lattice::basis::simple(1, "chain lattice");
-    basis2 = lattice::basis::simple(2, "square lattice");
+  BasisIoTest() :
+    basis1(lattice::basis::simple("chain lattice", 1)),
+    basis2(lattice::basis::simple("square lattice", 2)) {
   }
 protected:
   lattice::basis basis1, basis2;

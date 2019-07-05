@@ -40,10 +40,11 @@ public:
   };
 
   unitcell() {}
-  explicit unitcell(std::size_t dim) : dim_(dim) {}
-  unitcell(const unitcell& cell, const extent_t& extent);
-  unitcell(const unitcell& cell, const span_t& span);
+  unitcell(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
+  // unitcell(const unitcell& cell, const extent_t& extent);
+  // unitcell(const unitcell& cell, const span_t& span);
 
+  const std::string& name() const { return name_; }
   std::size_t dimension() const { return dim_; }
   std::size_t num_sites() const { return sites_.size(); }
   std::size_t num_bonds() const { return bonds_.size(); }
@@ -81,9 +82,9 @@ public:
   }
 
   static unitcell simple(std::size_t dim) {
-    unitcell cell(dim);
-    coordinate_t pos = coordinate_t::Zero(dim);
-    cell.add_site(pos, 0);
+    std::string name = "simple" + std::to_string(dim) + "d";
+    unitcell cell(name, dim);
+    cell.add_site(coordinate_t::Zero(dim), 0);
     for (std::size_t m = 0; m < dim; ++m) {
       offset_t os = offset_t::Zero(dim);
       os(m) = 1;
@@ -93,9 +94,11 @@ public:
   }
 
 private:
+  std::string name_;
   std::size_t dim_;
   std::vector<site_t> sites_;
   std::vector<bond_t> bonds_;
+  
 };
 
 std::size_t dimension(const unitcell& cell) {

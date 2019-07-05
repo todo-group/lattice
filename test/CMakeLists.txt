@@ -2,7 +2,7 @@
 
 set(PROGS basis unitcell supercell lattice)
 if(Boost_FOUND)
-  list(APPEND PROGS basis_xml)
+  list(APPEND PROGS basis_xml unitcell_xml lattice_xml)
 endif(Boost_FOUND)
 foreach(name ${PROGS})
   set(target_name test_${name})

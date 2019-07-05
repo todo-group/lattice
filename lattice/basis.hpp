@@ -25,30 +25,27 @@ namespace lattice {
 class basis {
 public:
   basis() {}
-  explicit basis(const basis_t& bs) : name_("") { set_basis(bs); }
-  explicit basis(const basis_t& bs, const std::string& name) : name_(name) { set_basis(bs); }
-  void clear() { *this = basis(); }
-  
-  void set_basis(const basis_t& bs) {
-    basis_ = bs;
-    if (basis_.rows() != basis_.cols())
+  basis(const std::string& name, const basis_t& bs) : name_(name), basis_(bs) {
+    if (bs.rows() != bs.cols())
       throw std::runtime_error("basis dimension mismatch");
   }
+
+  const std::string& name() const { return name_; }
   std::size_t dimension() const { return basis_.rows(); }
   basis_t basis_vectors() const { return basis_; }
   double volume() const { return std::abs(basis_.determinant()); }
-  std::string name() const { return name_; }
 
   static basis simple(std::size_t dim) {
-    return basis(basis_t::Identity(dim, dim), "simple");
+    std::string name = "simple" + std::to_string(dim) + "d";
+    return basis(name, basis_t::Identity(dim, dim));
   }
-  static basis simple(std::size_t dim, const std::string& name) {
-    return basis(basis_t::Identity(dim, dim), name);
+  static basis simple(const std::string& name, std::size_t dim) {
+    return basis(name, basis_t::Identity(dim, dim));
   }
   
 private:
-  basis_t basis_;
   std::string name_;
+  basis_t basis_;
 };
 
 std::size_t dimension(const basis& bs) {
