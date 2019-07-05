@@ -119,7 +119,7 @@ public:
     std::size_t lc = 0;
     for (std::size_t m = dim_; m > 0; --m) {
       lc *= (nmax_(m-1) - nmin_(m-1));
-      lc += offset(m-1);
+      lc += (offset(m-1) - nmin_(m-1));
     }
     return lc;
   }
