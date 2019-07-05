@@ -17,6 +17,8 @@
 #ifndef LATTICE_UNITCELL_HPP
 #define LATTICE_UNITCELL_HPP
 
+#include <exception>
+#include <vector>
 #include "types.hpp"
 
 namespace lattice {

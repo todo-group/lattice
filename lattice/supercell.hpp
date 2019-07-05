@@ -18,6 +18,8 @@
 #define LATTICE_SUPERCELL_HPP
 
 #include <algorithm>
+#include <exception>
+#include <vector>
 #include "types.hpp"
 
 namespace lattice {

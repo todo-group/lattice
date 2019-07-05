@@ -18,6 +18,7 @@
 #define LATTICE_BASIS_HPP
 
 #include <exception>
+#include <string>
 #include "types.hpp"
 
 namespace lattice {

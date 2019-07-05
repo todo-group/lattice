@@ -17,6 +17,7 @@
 #ifndef LATTICE_LATTICE_HPP
 #define LATTICE_LATTICE_HPP
 
+#include <exception>
 #include <vector>
 #include "basis.hpp"
 #include "unitcell.hpp"
