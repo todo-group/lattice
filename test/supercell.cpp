@@ -202,7 +202,7 @@ TEST(SupercellTest, TwoD4) {
 }
 
 TEST(SupercellTest, TwoDSimple) {
-  lattice::supercell supercell(2, 4);
+  lattice::supercell supercell(lattice::extent(4, 4));
   lattice::offset_t offset(2);
 
   // within_supercell

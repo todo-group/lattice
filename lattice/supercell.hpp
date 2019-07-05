@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <exception>
 #include <vector>
+#include "extent.hpp"
 #include "types.hpp"
 
 namespace lattice {
@@ -31,13 +32,8 @@ public:
     span_t span = length * span_t::Identity(dim, dim);
     init(span);
   }
-  supercell(const extent_t& extent) { init(extent); }
   supercell(const span_t& span) { init(span); }
 
-  void init(const extent_t& extent) {
-    span_t span = extent.asDiagonal();
-    init(span);
-  }
   void init(const span_t& span) {
     span_ = span;
     if (span_.cols() != span_.rows())
