@@ -158,7 +158,7 @@ public:
   std::size_t dimension() const { return dim_; }
   
   std::size_t num_sites() const { return sites_.size(); }
-  std::size_t site_type(std::size_t s) const { return sites_[s].type; }
+  int site_type(std::size_t s) const { return sites_[s].type; }
   const coordinate_t& coordinate(std::size_t s) const { return coordinates_[s]; }
   std::size_t num_neighbors(std::size_t s) const {
     return sites_[s].neighbors.size();
@@ -171,7 +171,7 @@ public:
   }
 
   std::size_t num_bonds() const { return bonds_.size(); }
-  std::size_t bond_type(std::size_t b) const { return bonds_[b].type; }
+  int bond_type(std::size_t b) const { return bonds_[b].type; }
   std::size_t source(std::size_t b) const { return bonds_[b].source; }
   std::size_t target(std::size_t b) const { return bonds_[b].target; }
   std::pair<std::size_t, std::size_t> edge_sites(std::size_t b) const {

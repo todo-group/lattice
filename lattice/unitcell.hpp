@@ -20,6 +20,8 @@
 #include <exception>
 #include <vector>
 #include "types.hpp"
+#include "coordinate.hpp"
+#include "offset.hpp"
 
 namespace lattice {
 
