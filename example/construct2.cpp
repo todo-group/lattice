@@ -25,5 +25,5 @@ int main() {
   unitcell.add_bond(0, 0, lattice::offset(1), 0);
   lattice::span_t span(1, 1); span << 16; // 1x1 matrix
   std::vector<lattice::boundary_t> boundary(1, lattice::boundary_t::periodic);
-  lattice::graph lat("chain lattice", basis, unitcell, span, boundary);
+  lattice::graph lat(basis, unitcell, span, boundary);
 }

@@ -28,15 +28,11 @@ namespace lattice {
 using boost::property_tree::ptree;
 
 ptree& operator>>(ptree& pt, graph& lat) {
-  std::string name;
-  if (auto str = pt.get_optional<std::string>("<xmlattr>.name")) {
-    name = str.get();
-  }
   std::size_t dim = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
     dim = stoi(str.get());
   }
-  lat = graph(name, dim);
+  lat = graph(dim);
 
   std::size_t ns = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.vertices")) ns = stoi(str.get());
@@ -94,9 +90,9 @@ ptree& operator>>(ptree& pt, graph& lat) {
   return pt;
 }
 
-ptree& operator<<(ptree& pt, const graph& lat) {
+ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
   ptree& root = pt.add("GRAPH", "");
-  root.put("<xmlattr>.name", lat.name());
+  root.put("<xmlattr>.name", name);
   if (lat.dimension() > 0) root.put("<xmlattr>.dimension", lat.dimension());
   root.put("<xmlattr>.vertices", lat.num_sites());
   for (std::size_t s = 0; s < lat.num_sites(); ++s) {

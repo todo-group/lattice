@@ -43,59 +43,33 @@ public:
     int type;
   };
   
-  graph() : name_("unknown"), dim_(0) {}
-  explicit graph(std::size_t dim) : name_("unknown"), dim_(dim) {}
-  graph(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
-  graph(const basis& bs, const unitcell& cell, std::size_t length) : name_() {
+  graph() : dim_(0) {}
+  explicit graph(std::size_t dim) : dim_(dim) {}
+  graph(const basis& bs, const unitcell& cell, std::size_t length) {
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, std::size_t length) :
-    name_(name) {
-    init(bs, cell, supercell(cell.dimension(), length),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
-  }
-  graph(const basis& bs, const unitcell& cell, const extent_t& extent) : name_() {
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent) {
     init(bs, cell, supercell(extent),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent) :
-    name_(name) {
-    init(bs, cell, supercell(extent),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent, boundary_t boundary) {
+    init(bs, cell, supercell(extent), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   graph(const basis& bs, const unitcell& cell, const extent_t& extent,
-          const std::vector<boundary_t>& boundary) : name_() {
+        const std::vector<boundary_t>& boundary) {
     init(bs, cell, supercell(extent), boundary);
   }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent,
-          const std::vector<boundary_t>& boundary) : name_(name) {
-    init(bs, cell, supercell(extent), boundary);
-  }
-  graph(const basis& bs, const unitcell& cell, const span_t& span) : name_() {
+  graph(const basis& bs, const unitcell& cell, const span_t& span) {
     init(bs, cell, supercell(span),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span) :
-    name_(name) {
-    init(bs, cell, supercell(span),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+  graph(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) {
+    init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   graph(const basis& bs, const unitcell& cell, const span_t& span,
-          const std::vector<boundary_t>& boundary) : name_() {
+        const std::vector<boundary_t>& boundary) {
     init(bs, cell, supercell(span), boundary);
-  }
-  graph(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) :
-    name_() {
-    init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
-  }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
-          const std::vector<boundary_t>& boundary) : name_(name) {
-    init(bs, cell, supercell(span), boundary);
-  }
-  graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,
-          boundary_t boundary) : name_(name) {
-    init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   
   void init(const basis& bs, const unitcell& cell, const supercell& super,
@@ -155,7 +129,6 @@ public:
     return b;
   }
       
-  const std::string& name() const { return name_; }
   std::size_t dimension() const { return dim_; }
   
   std::size_t num_sites() const { return sites_.size(); }
@@ -184,8 +157,7 @@ public:
   }
 
   void print(std::ostream& os) const {
-    std::cout << "name: " << name() << std::endl
-              << "dimension: " << dimension() << std::endl
+    std::cout << "dimension: " << dimension() << std::endl
               << "number of sites: " << num_sites() << std::endl
               << "number of bonds: " << num_bonds() << std::endl;
     for (std::size_t s = 0; s < num_sites(); ++s) {
@@ -201,7 +173,6 @@ public:
   }
   
 private:
-  std::string name_;
   std::size_t dim_;
   std::vector<site_t> sites_;
   std::vector<coordinate_t> coordinates_;

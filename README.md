@@ -16,6 +16,16 @@ Simple Lattice/Graph Library
 * Eigen3
 * [optional] Boost Library (Property Tree) for reading and writing XML files
 
+## How to build tests and examples and run tests
+
+```
+mkdir build
+cd build
+cmake ..
+make
+make test
+```
+
 ## Classes/types
 
 * lattice::basis

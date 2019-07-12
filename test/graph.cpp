@@ -86,7 +86,7 @@ TEST(GraphTest, SkewedSquare) {
   span_t span(2, 2);
   span << 4, -1,
           1,  3;
-  graph lat("skewed square", bs, cell, span);
+  graph lat(bs, cell, span);
   lat.print(std::cout);
   check(lat);
 }
@@ -97,7 +97,7 @@ TEST(GraphTest, SkewedSquareOpen) {
   span_t span(2, 2);
   span << 4, -1,
           1,  4;
-  graph lat("skewed square", bs, cell, span, boundary_t::open);
+  graph lat(bs, cell, span, boundary_t::open);
   lat.print(std::cout);
   check(lat);
 }

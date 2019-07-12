@@ -24,7 +24,7 @@ TEST(GraphXMLTest, WriteXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << graph::simple(2, 4);
+  write_xml(root, "square lattice", graph::simple(2, 4));
   write_xml(std::cerr, pt,
     boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
 }
@@ -44,8 +44,7 @@ TEST(GraphXMLTest, ReadXML1) {
   read_xml(is, root);
 
   graph lat;
-  read_xml(pt, "5-site dimerized", lat);
-  EXPECT_EQ("5-site dimerized", lat.name());
+  EXPECT_TRUE(read_xml(pt, "5-site dimerized", lat));
   EXPECT_EQ(0, lat.dimension());
   EXPECT_EQ(5, lat.num_sites());
   EXPECT_EQ(4, lat.num_bonds());

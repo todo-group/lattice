@@ -26,5 +26,5 @@ int main() {
   unitcell.add_bond(0, 0, lattice::offset(0, 1), 0);
   lattice::span_t span(2, 2); span << 4, 0, 0, 4; // 2x2 matrix
   std::vector<lattice::boundary_t> boundary(2, lattice::boundary_t::periodic);
-  lattice::graph lat("square lattice", basis, unitcell, span, boundary);
+  lattice::graph lat(basis, unitcell, span, boundary);
 }
