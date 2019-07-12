@@ -32,7 +32,6 @@ Simple Lattice/Graph Library
 
   |  member functions  |  description  |
   | ---- | ---- |
-  | const std::string& name() const; | name of the lattice |
   | std::size\_t dimension() const; | dimension of the lattice |
   |||
   | std::size\_t num\_sites() const; | total number of sites |
@@ -61,13 +60,13 @@ Simple Lattice/Graph Library
 
      ```
      lattice::basis_t bs(1, 1); bs << 1; // 1x1 matrix
-     lattice::basis basis("simple1d", bs);
-     lattice::unitcell unitcell("simple1d", 1);
+     lattice::basis basis(bs);
+     lattice::unitcell unitcell(1);
      unitcell.add_site(lattice::coordinate(0), 0);
      unitcell.add_bond(0, 0, lattice::offset(1), 0);
      lattice::span_t span(1, 1); span << 16; // 1x1 matrix
      std::vector<lattice::boundary_t> boundary(1, lattice::boundary_t::periodic);
-     lattice::graph lat("chain lattice", basis, unitcell, span, boundary);
+     lattice::graph lat(basis, unitcell, span, boundary);
      ```
      
 * periodic square lattice of 4 x 4 sites
@@ -82,13 +81,13 @@ Simple Lattice/Graph Library
 
      ```
      lattice::basis_t bs(2, 2); bs << 1, 0, 0, 1; // 2x2 matrix
-     lattice::basis basis("simple2d", bs);
-     lattice::unitcell unitcell("simple2d", 2);
+     lattice::basis basis(bs);
+     lattice::unitcell unitcell(2);
      unitcell.add_site(lattice::coordinate(0, 0), 0);
      unitcell.add_bond(0, 0, lattice::offset(1, 0), 0);
      unitcell.add_bond(0, 0, lattice::offset(0, 1), 0);
      lattice::span_t span(2, 2); span << 4, 0, 0, 4; // 2x2 matrix
      std::vector<lattice::boundary_t> boundary(2, lattice::boundary_t::periodic);
-     lattice::graph lat("square lattice", basis, unitcell, span, boundary);
+     lattice::graph lat(basis, unitcell, span, boundary);
      ```
 

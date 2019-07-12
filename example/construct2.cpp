@@ -20,7 +20,7 @@
 int main() {
   lattice::basis_t bs(1, 1); bs << 1; // 1x1 matrix
   lattice::basis basis(bs);
-  lattice::unitcell unitcell("simple1d", 1);
+  lattice::unitcell unitcell(1);
   unitcell.add_site(lattice::coordinate(0), 0);
   unitcell.add_bond(0, 0, lattice::offset(1), 0);
   lattice::span_t span(1, 1); span << 16; // 1x1 matrix

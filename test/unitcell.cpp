@@ -20,7 +20,7 @@
 using namespace lattice;
 
 TEST(UnitcellTest, SimpleSquare1) {
-  unitcell unitcell("simple2d", 2);
+  unitcell unitcell(2);
   coordinate_t pos(2); pos << 0.0, 0.0;
   auto s0 = unitcell.add_site(pos, 0);
   offset_t offset_x(2); offset_x << 1, 0;

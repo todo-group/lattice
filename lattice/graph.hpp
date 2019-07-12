@@ -46,7 +46,7 @@ public:
   graph() : name_("unknown"), dim_(0) {}
   explicit graph(std::size_t dim) : name_("unknown"), dim_(dim) {}
   graph(const std::string& name, std::size_t dim) : name_(name), dim_(dim) {}
-  graph(const basis& bs, const unitcell& cell, std::size_t length) : name_(cell.name()) {
+  graph(const basis& bs, const unitcell& cell, std::size_t length) : name_() {
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
@@ -55,7 +55,7 @@ public:
     init(bs, cell, supercell(cell.dimension(), length),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
-  graph(const basis& bs, const unitcell& cell, const extent_t& extent) : name_(cell.name()) {
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent) : name_() {
     init(bs, cell, supercell(extent),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
@@ -65,14 +65,14 @@ public:
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
   graph(const basis& bs, const unitcell& cell, const extent_t& extent,
-          const std::vector<boundary_t>& boundary) : name_(cell.name()) {
+          const std::vector<boundary_t>& boundary) : name_() {
     init(bs, cell, supercell(extent), boundary);
   }
   graph(const std::string& name, const basis& bs, const unitcell& cell, const extent_t& extent,
           const std::vector<boundary_t>& boundary) : name_(name) {
     init(bs, cell, supercell(extent), boundary);
   }
-  graph(const basis& bs, const unitcell& cell, const span_t& span) : name_(cell.name()) {
+  graph(const basis& bs, const unitcell& cell, const span_t& span) : name_() {
     init(bs, cell, supercell(span),
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
@@ -82,11 +82,11 @@ public:
          std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
   }
   graph(const basis& bs, const unitcell& cell, const span_t& span,
-          const std::vector<boundary_t>& boundary) : name_(cell.name()) {
+          const std::vector<boundary_t>& boundary) : name_() {
     init(bs, cell, supercell(span), boundary);
   }
   graph(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) :
-    name_(cell.name()) {
+    name_() {
     init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   graph(const std::string& name, const basis& bs, const unitcell& cell, const span_t& span,

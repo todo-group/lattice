@@ -25,14 +25,14 @@ TEST(UnitcellXMLTest, WriteXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << unitcell::simple(1)
-       << unitcell::simple(2);
+  write_xml(root, "simple1d", unitcell::simple(1));
+  write_xml(root, "simple2d", unitcell::simple(2));
   write_xml(std::cerr, pt,
     boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
   
   unitcell cell1, cell2;
-  read_xml(pt, "simple1d", cell1);
-  read_xml(pt, "simple1d", cell2);
+  EXPECT_TRUE(read_xml(pt, "simple1d", cell1));
+  EXPECT_TRUE(read_xml(pt, "simple1d", cell2));
 }
 
 TEST(UnitcellXMLTest, ReadXML1) {
@@ -48,8 +48,7 @@ TEST(UnitcellXMLTest, ReadXML1) {
   read_xml(is, root);
 
   unitcell cell;
-  read_xml(pt, "simple1d", cell);
-  EXPECT_EQ("simple1d", cell.name());
+  EXPECT_TRUE(read_xml(pt, "simple1d", cell));
   EXPECT_EQ(1, cell.dimension());
   EXPECT_EQ(1, cell.num_sites());
   EXPECT_EQ(1, cell.num_bonds());
@@ -80,8 +79,7 @@ TEST(UnitcellXMLTest, ReadXML2) {
   read_xml(is, root);
 
   unitcell cell;
-  read_xml(pt, "kagome", cell);
-  EXPECT_EQ("kagome", cell.name());
+  EXPECT_TRUE(read_xml(pt, "kagome", cell));
   EXPECT_EQ(2, cell.dimension());
   EXPECT_EQ(3, cell.num_sites());
   EXPECT_EQ(6, cell.num_bonds());
@@ -109,8 +107,7 @@ TEST(UnitcellXMLTest, ReadXML3) {
   read_xml(is, root);
 
   unitcell cell;
-  read_xml(pt, "anisotropic3d", cell);
-  EXPECT_EQ("anisotropic3d", cell.name());
+  EXPECT_TRUE(read_xml(pt, "anisotropic3d", cell));
   EXPECT_EQ(3, cell.dimension());
   EXPECT_EQ(1, cell.num_sites());
   EXPECT_EQ(3, cell.num_bonds());

@@ -28,17 +28,13 @@ namespace lattice {
 using boost::property_tree::ptree;
 
 ptree& operator>>(ptree& pt, unitcell& cell) {
-  std::string name;
-  if (auto str = pt.get_optional<std::string>("<xmlattr>.name")) {
-    name = str.get();
-  }
   std::size_t dim = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
     dim = stoi(str.get());
   } else {
     throw std::invalid_argument("attribute dimension does not found");
   }
-  cell = unitcell(name, dim);
+  cell = unitcell(dim);
 
   std::size_t ns = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.vertices")) ns = stoi(str.get());
@@ -118,9 +114,9 @@ ptree& operator>>(ptree& pt, unitcell& cell) {
   return pt;
 }
 
-ptree& operator<<(ptree& pt, const unitcell& cell) {
+ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell) {
   ptree& root = pt.add("UNITCELL", "");
-  root.put("<xmlattr>.name", cell.name());
+  root.put("<xmlattr>.name", name);
   root.put("<xmlattr>.dimension", cell.dimension());
   root.put("<xmlattr>.vertices", cell.num_sites());
   for (std::size_t s = 0; s < cell.num_sites(); ++s) {
