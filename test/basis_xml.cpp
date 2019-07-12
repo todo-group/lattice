@@ -23,8 +23,8 @@ using boost::property_tree::ptree;
 class BasisIoTest : public testing::Test {
 public:
   BasisIoTest() :
-    basis1(basis::simple("chain lattice", 1)),
-    basis2(basis::simple("square lattice", 2)) {
+    basis1(basis::simple(1)),
+    basis2(basis::simple(2)) {
   }
 protected:
   basis basis1, basis2;
@@ -34,7 +34,8 @@ TEST_F(BasisIoTest, WriteXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << basis1 << basis2;
+  write_xml(root, "simple1d", basis1);
+  write_xml(root, "simple2d", basis2);
   write_xml(std::cerr, pt,
     boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
 }
@@ -43,22 +44,24 @@ TEST_F(BasisIoTest, ReadXML) {
   ptree pt;
   ptree& root = pt.put("LATTICES", "");
 
-  root << basis1 << basis2;
+  write_xml(root, "simple1d", basis1);
+  write_xml(root, "simple2d", basis2);
 
   std::map<std::string, basis> lattices;
   for (auto& child : pt.get_child("LATTICES")) {
     if (child.first == "LATTICE") {
+      std::string name;
       basis bs;
       child.second >> bs;
-      lattices[bs.name()] = bs;
+      lattices[name] = bs;
     }
   }
-  EXPECT_EQ(basis1.basis_vectors(), lattices[basis1.name()].basis_vectors());
-  EXPECT_EQ(basis2.basis_vectors(), lattices[basis2.name()].basis_vectors());
+  EXPECT_EQ(basis1.basis_vectors(), lattices["simple1d"].basis_vectors());
+  EXPECT_EQ(basis2.basis_vectors(), lattices["simple2d"].basis_vectors());
 
   basis bs;
-  read_xml(pt, "chain lattice", bs);
+  EXPECT_TRUE(read_xml(pt, "simple1d", bs));
   EXPECT_EQ(basis1.basis_vectors(), bs.basis_vectors());
-  read_xml(pt, "square lattice", bs);
+  EXPECT_TRUE(read_xml(pt, "simple2d", bs));
   EXPECT_EQ(basis2.basis_vectors(), bs.basis_vectors());
 }

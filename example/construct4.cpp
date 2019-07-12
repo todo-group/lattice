@@ -19,7 +19,7 @@
 
 int main() {
   lattice::basis_t bs(2, 2); bs << 1, 0, 0, 1; // 2x2 matrix
-  lattice::basis basis("simple2d", bs);
+  lattice::basis basis(bs);
   lattice::unitcell unitcell("simple2d", 2);
   unitcell.add_site(lattice::coordinate(0, 0), 0);
   unitcell.add_bond(0, 0, lattice::offset(1, 0), 0);

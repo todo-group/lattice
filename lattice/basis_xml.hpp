@@ -28,10 +28,6 @@ namespace lattice {
 using boost::property_tree::ptree;
 
 ptree& operator>>(ptree& pt, basis& bs) {
-  std::string name;
-  if (auto str = pt.get_optional<std::string>("<xmlattr>.name")) {
-    name = str.get();
-  }
   std::vector<std::vector<double>> basis_v;
   for (auto& child : pt.get_child("BASIS")) {
     if (child.first == "VECTOR") {
@@ -61,13 +57,13 @@ ptree& operator>>(ptree& pt, basis& bs) {
       basis_in(j, i) = basis_v[i][j];
     }
   }
-  bs = basis(name, basis_in);
+  bs = basis(basis_in);
   return pt;
 }
 
-ptree& operator<<(ptree& pt, const basis& bs) {
+ptree& write_xml(ptree& pt, const std::string& name, const basis& bs) {
   ptree& child = pt.add("LATTICE", "");
-  child.put("<xmlattr>.name", bs.name());
+  child.put("<xmlattr>.name", name);
   child.put("<xmlattr>.dimension", bs.dimension());
   ptree& basis = child.add("BASIS", "");
   for (std::size_t j = 0; j < bs.dimension(); ++j) {

@@ -26,26 +26,20 @@ namespace lattice {
 class basis {
 public:
   basis() {}
-  basis(const std::string& name, const basis_t& bs) : name_(name), basis_(bs) {
+  basis(const basis_t& bs) : basis_(bs) {
     if (bs.rows() != bs.cols())
       throw std::runtime_error("basis dimension mismatch");
   }
 
-  const std::string& name() const { return name_; }
   std::size_t dimension() const { return basis_.rows(); }
   basis_t basis_vectors() const { return basis_; }
   double volume() const { return std::abs(basis_.determinant()); }
 
   static basis simple(std::size_t dim) {
-    std::string name = "simple" + std::to_string(dim) + "d";
-    return basis(name, basis_t::Identity(dim, dim));
-  }
-  static basis simple(const std::string& name, std::size_t dim) {
-    return basis(name, basis_t::Identity(dim, dim));
+    return basis(basis_t::Identity(dim, dim));
   }
   
 private:
-  std::string name_;
   basis_t basis_;
 };
 

@@ -30,7 +30,7 @@ TEST(BasisTest, SimpleBasis2) {
   basis_t bs(2, 2);
   bs << 1, 0,
         0, 1.5;
-  basis basis("simple2d", bs);
+  basis basis(bs);
   std::cout << basis.dimension() << std::endl;
   std::cout << basis.basis_vectors() << std::endl;
   std::cout << basis.volume() << std::endl;
