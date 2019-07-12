@@ -17,6 +17,7 @@
 #ifndef LATTICE_GRAPH_HPP
 #define LATTICE_GRAPH_HPP
 
+#include <iostream>
 #include <exception>
 #include <vector>
 #include "basis.hpp"
