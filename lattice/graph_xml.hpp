@@ -22,6 +22,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "graph.hpp"
+#include "unitcell_xml.hpp"
+#include "basis_xml.hpp"
 
 namespace lattice {
 

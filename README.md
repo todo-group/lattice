@@ -101,3 +101,16 @@ make test
      lattice::graph lat(basis, unitcell, span, boundary);
      ```
 
+   * reading basis and unitcell from XML file
+   
+      ```
+      std::string file = "lattices.xml";
+      std::ifstream is(file);
+      boost::property_tree::ptree pt;
+      read_xml(is, pt);
+      lattice::basis bs;
+      read_xml(pt, "square lattice", bs);
+      lattice::unitcell cell;
+      read_xml(pt, "simple2d", cell);
+      lattice::graph lat(bs, cell, lattice::extent(4, 4));
+      ```

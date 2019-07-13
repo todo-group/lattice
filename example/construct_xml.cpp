@@ -15,16 +15,17 @@
 */
 
 #include <iostream>
-#include "lattice/graph.hpp"
+#include "lattice/graph_xml.hpp"
 
 int main() {
-  lattice::basis_t bs(1, 1); bs << 1; // 1x1 matrix
-  lattice::basis basis(bs);
-  lattice::unitcell unitcell(1);
-  unitcell.add_site(lattice::coordinate(0), 0);
-  unitcell.add_bond(0, 0, lattice::offset(1), 0);
-  lattice::span_t span(1, 1); span << 16; // 1x1 matrix
-  std::vector<lattice::boundary_t> boundary(1, lattice::boundary_t::periodic);
-  lattice::graph lat(basis, unitcell, span, boundary);
+  std::string file = "lattices.xml";
+  std::ifstream is(file);
+  boost::property_tree::ptree pt;
+  read_xml(is, pt);
+  lattice::basis bs;
+  read_xml(pt, "square lattice", bs);
+  lattice::unitcell cell;
+  read_xml(pt, "simple2d", cell);
+  lattice::graph lat(bs, cell, lattice::extent(4, 4));
   lat.print(std::cout);
 }

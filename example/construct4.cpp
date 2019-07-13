@@ -27,4 +27,5 @@ int main() {
   lattice::span_t span(2, 2); span << 4, 0, 0, 4; // 2x2 matrix
   std::vector<lattice::boundary_t> boundary(2, lattice::boundary_t::periodic);
   lattice::graph lat(basis, unitcell, span, boundary);
+  lat.print(std::cout);
 }

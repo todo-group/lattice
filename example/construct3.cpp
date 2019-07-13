@@ -19,4 +19,5 @@
 
 int main() {
   lattice::graph lat = lattice::graph::simple(2, 4);
+  lat.print(std::cout);
 }
