@@ -1,1 +1,27 @@
-<LATTICES><LATTICE dimension="3" name="sc"><BASIS><VECTOR>1.0 0.0 0.0</VECTOR><VECTOR>0.0 1.0 0.0</VECTOR><VECTOR>0.0 0.0 1.0</VECTOR></BASIS></LATTICE><UNITCELL dimension="3" name="sc"><VERTEX type="0"><COORDINATE>0.0 0.0 0.0</COORDINATE></VERTEX><EDGE type="0"><SOURCE vertex="0" /><TARGET offset="0 0 1" vertex="0" /></EDGE><EDGE type="0"><SOURCE vertex="0" /><TARGET offset="0 1 0" vertex="0" /></EDGE><EDGE type="0"><SOURCE vertex="0" /><TARGET offset="1 0 0" vertex="0" /></EDGE></UNITCELL></LATTICES>
+<?xml version="1.0" ?>
+<LATTICES>
+  <LATTICE dimension="3" name="sc">
+    <BASIS>
+      <VECTOR>1.0 0.0 0.0</VECTOR>
+      <VECTOR>0.0 1.0 0.0</VECTOR>
+      <VECTOR>0.0 0.0 1.0</VECTOR>
+    </BASIS>
+  </LATTICE>
+  <UNITCELL dimension="3" name="sc">
+    <VERTEX type="0">
+      <COORDINATE>0.0 0.0 0.0</COORDINATE>
+    </VERTEX>
+    <EDGE type="0">
+      <SOURCE vertex="0"/>
+      <TARGET offset="0 0 1" vertex="0"/>
+    </EDGE>
+    <EDGE type="0">
+      <SOURCE vertex="0"/>
+      <TARGET offset="0 1 0" vertex="0"/>
+    </EDGE>
+    <EDGE type="0">
+      <SOURCE vertex="0"/>
+      <TARGET offset="1 0 0" vertex="0"/>
+    </EDGE>
+  </UNITCELL>
+</LATTICES>

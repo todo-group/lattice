@@ -2,7 +2,8 @@
 
 import numpy as np
 import sys
-import xml.etree.ElementTree as ET
+from xml.etree import ElementTree
+from xml.dom import minidom
 
 class unitcell:
     """
@@ -29,49 +30,17 @@ class unitcell:
     bonds : list of [int, int, array of int, int]
         source, target, cell offset of target, and type of each bond
     """
-    def __init__(self, path = '', name = ''):
+    def __init__(self, path, cutoff):
         """
         Paramters
         ---------
         path :
            path to the input file
-        name :
-           name of unit cell type ('simple cubic' or 'square')
-        If both paramters are specified, 'path' precedes 'name'.
         """
-        if (len(path) > 0):
-            self.parse(path)
-        else:
-            if (name == 'simple cubic'):
-                # simple cubic lattice
-                self.dimension = 3
-                self.bravais = 'sc'
-                self.lattice_constant = np.array([1.0, 1.0, 1.0])
-                self.lattice_angle = np.array([90.0, 90.0, 90.0])
-                self.cell_bases = np.eye(3, order='F')
-                self.site_labels = ['S',]
-                self.sites = [[np.array([0.0, 0.0, 0.0]), 0],]
-                self.coupling_constants = [1.0]
-                self.bonds = [[0, 0, np.array([1, 0, 0], np.int32), 0],
-                              [0, 0, np.array([0, 1, 0], np.int32), 0],
-                              [0, 0, np.array([0, 0, 1], np.int32), 0]]
-            elif (name == 'square'):
-                # square lattice
-                self.dimension = 2
-                self.bravais = 'sq'
-                self.lattice_constant = np.array([1.0, 1.0])
-                self.lattice_angle = np.array([90.0])
-                self.cell_bases = np.eye(2, order='F')
-                self.site_labels = ['S',]
-                self.sites = [[np.array([0.0, 0.0]), 0],]
-                self.coupling_constants = [1.0]
-                self.bonds = [[0, 0, np.array([1, 0], np.int32), 0],
-                              [0, 0, np.array([0, 1], np.int32), 0]]
-            else:
-                raise RuntimeError('unknown lattice name')
+        self.parse(path, cutoff)
         self.volume = abs(np.linalg.det(self.cell_bases))
 
-    def parse(self, path):
+    def parse(self, path, cutoff):
         """
         Read effective lattice model information from AkaiKKR output file
 
@@ -172,18 +141,21 @@ class unitcell:
 
 if __name__ == '__main__':
     import sys
-    path = ''
-    name = 'simple cubic' # 'simple cubic' or 'square'
-    if (len(sys.argv) > 2):
-        path = sys.argv[1]
-        name = sys.argv[2]
-    else:
+    if (len(sys.argv) <= 2):
         print('Error: {} path name'.format(sys.argv[0]))
         sys.exit(127)
-    p = unitcell(path, name)
+    path = sys.argv[1]
+    name = sys.argv[2]
+    cutoff = 0.0
+    if (len(sys.argv) > 3):
+        cutoff = float(sys.argv[3])
+    output_xml = "lattice_" + name + ".xml"
+    output_dat = "coupling_" + name + ".dat"
+    p = unitcell(path, cutoff)
     print('[[input]]')
     print('path: {}'.format(path))
-    print('name: {}'.format(name))
+    print('name: {} {}'.format(output_xml, output_dat))
+    print('cutoff: {}'.format(cutoff))
     print('[[unitcell]]')
     print('dimension: {}'.format(p.dimension))
     print('lattice constants: {}'.format(p.lattice_constant))
@@ -193,53 +165,54 @@ if __name__ == '__main__':
             sys.stdout.write('{} '.format(p.cell_bases[i][j]))
         sys.stdout.write('\n')
     print('unit cell volume: {}'.format(p.volume))
-    print('number of sites: {}'.format(len(p.sites)))
-    print('sites:', p.sites)
-    print('number of bonds:  {}'.format(len(p.bonds)))
-    print('bonds:', p.bonds)
-    print('site labels:', p.site_labels)
-    print('coupling constants:', p.coupling_constants)
 
-    lattices = ET.Element('LATTICES')
-
-    lattice = ET.SubElement(lattices, 'LATTICE')
+    lattices = ElementTree.Element('LATTICES')
+    lattice = ElementTree.SubElement(lattices, 'LATTICE')
     lattice.set('name', name)
     lattice.set('dimension', str(p.dimension))
-    basis = ET.SubElement(lattice, 'BASIS')
+    basis = ElementTree.SubElement(lattice, 'BASIS')
     for j in range(p.dimension):
-        vector = ET.SubElement(basis, 'VECTOR')
+        vector = ElementTree.SubElement(basis, 'VECTOR')
         el = []
         for i in range(p.dimension):
             el.append(str(p.cell_bases[i][j]))
         vector.text = ' '.join(el)
 
-    unitcell = ET.SubElement(lattices, 'UNITCELL')
+    unitcell = ElementTree.SubElement(lattices, 'UNITCELL')
     unitcell.set('name', name)
     unitcell.set('dimension', str(p.dimension))
     for s in p.sites:
-        vertex = ET.SubElement(unitcell, 'VERTEX')
+        vertex = ElementTree.SubElement(unitcell, 'VERTEX')
         vertex.set('type', str(s[1]))
-        coordinate = ET.SubElement(vertex, 'COORDINATE')
+        coordinate = ElementTree.SubElement(vertex, 'COORDINATE')
         el = []
         for i in range(p.dimension):
             el.append(str(s[0][i]))
         coordinate.text = ' '.join(el)
+    num_bonds = 0
     for b in p.bonds:
-        edge = ET.SubElement(unitcell, 'EDGE')
-        edge.set('type', str(b[1]))
-        source = ET.SubElement(edge, 'SOURCE')
-        source.set('vertex', str(b[0]))
-        target = ET.SubElement(edge, 'TARGET')
-        target.set('vertex', str(b[1]))
-        el = []
-        for i in range(p.dimension):
-            el.append(str(b[2][i]))
-        target.set('offset', ' '.join(el))
+        if (abs(p.coupling_constants[b[3]]) > cutoff):
+            edge = ElementTree.SubElement(unitcell, 'EDGE')
+            edge.set('type', str(b[3]))
+            source = ElementTree.SubElement(edge, 'SOURCE')
+            source.set('vertex', str(b[0]))
+            target = ElementTree.SubElement(edge, 'TARGET')
+            target.set('vertex', str(b[1]))
+            el = []
+            for i in range(p.dimension):
+                el.append(str(b[2][i]))
+            target.set('offset', ' '.join(el))
+            num_bonds += 1
 
-    root = ET.ElementTree(lattices)
-    with open("lattice_" + name + ".xml", mode='w') as f:
-        f.write(ET.tostring(lattices, encoding="unicode"))
+    print('number of sites: {}'.format(len(p.sites)))
+    print('number of bonds: {}'.format(num_bonds))
+
+    root = ElementTree.ElementTree(lattices)
+    with open(output_xml, mode='w') as f:
+        f.write(minidom.parseString(ElementTree.tostring(lattices, 'utf-8')).toprettyxml(indent="  "))
 
     with open("coupling_" + name + ".dat", mode='w') as f:
         for i in range(len(p.coupling_constants)):
-            f.write('{} {}'.format(i, p.coupling_constants[i]))
+            if (abs(p.coupling_constants[i]) > cutoff):
+                print('  type {}: J = {}'.format(i, p.coupling_constants[i]))
+                f.write('{} {}\n'.format(i, p.coupling_constants[i]))
