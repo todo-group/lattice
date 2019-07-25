@@ -15,36 +15,36 @@
       <COORDINATE>0.5 0.5 0.5</COORDINATE>
     </VERTEX>
     <EDGE type="0">
-      <SOURCE vertex="0"/>
-      <TARGET offset="0 0 0" vertex="1"/>
+      <SOURCE vertex="1"/>
+      <TARGET offset="0 0 0" vertex="2"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="1 0 0" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="1 0 0" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="1 0 1" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="1 0 1" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="0 0 1" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="0 0 1" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="0 1 0" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="0 1 0" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="1 1 0" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="1 1 0" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="1 1 1" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="1 1 1" vertex="1"/>
     </EDGE>
     <EDGE type="0">
-      <SOURCE vertex="1"/>
-      <TARGET offset="0 1 1" vertex="0"/>
+      <SOURCE vertex="2"/>
+      <TARGET offset="0 1 1" vertex="1"/>
     </EDGE>
   </UNITCELL>
 </LATTICES>

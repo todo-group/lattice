@@ -117,7 +117,7 @@ class unitcell:
                     if (len(words) == 13):
                         offset = np.array([int(words[6]), int(words[7]), int(words[8])], np.int32)
                         if (self.__valid_offset(offset)):
-                            self.bonds.append([int(words[1])-1, int(words[2])-1, offset, int(words[12])-1])
+                            self.bonds.append([int(words[1]), int(words[2]), offset, int(words[12])-1])
 
                 if (len(words) == 0):
                     if (section != 'J_ij'):
