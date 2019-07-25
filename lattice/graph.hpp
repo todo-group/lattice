@@ -102,7 +102,7 @@ public:
           if (boundary[m] == boundary_t::open && cross(m) != 0) valid = false;
         if (valid) {
           std::size_t t = target_cell * cell.num_sites() + cell.bond(u).target;
-          add_bond(s, t, cell.bond(u).type);
+          if (s != t) add_bond(s, t, cell.bond(u).type);
         }
       }
     }
