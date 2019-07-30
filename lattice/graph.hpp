@@ -45,26 +45,21 @@ public:
   
   graph() : dim_(0) {}
   explicit graph(std::size_t dim) : dim_(dim) {}
-  graph(const basis& bs, const unitcell& cell, std::size_t length) {
+  graph(const basis& bs, const unitcell& cell, std::size_t length,
+        boundary_t boundary = boundary_t::periodic) {
     init(bs, cell, supercell(cell.dimension(), length),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
+         std::vector<boundary_t>(cell.dimension(), boundary));
   }
-  graph(const basis& bs, const unitcell& cell, const extent_t& extent) {
-    init(bs, cell, supercell(extent),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
-  }
-  graph(const basis& bs, const unitcell& cell, const extent_t& extent, boundary_t boundary) {
+  graph(const basis& bs, const unitcell& cell, const extent_t& extent,
+        boundary_t boundary = boundary_t::periodic) {
     init(bs, cell, supercell(extent), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   graph(const basis& bs, const unitcell& cell, const extent_t& extent,
         const std::vector<boundary_t>& boundary) {
     init(bs, cell, supercell(extent), boundary);
   }
-  graph(const basis& bs, const unitcell& cell, const span_t& span) {
-    init(bs, cell, supercell(span),
-         std::vector<boundary_t>(cell.dimension(), boundary_t::periodic));
-  }
-  graph(const basis& bs, const unitcell& cell, const span_t& span, boundary_t boundary) {
+  graph(const basis& bs, const unitcell& cell, const span_t& span,
+        boundary_t boundary = boundary_t::periodic) {
     init(bs, cell, supercell(span), std::vector<boundary_t>(cell.dimension(), boundary));
   }
   graph(const basis& bs, const unitcell& cell, const span_t& span,
