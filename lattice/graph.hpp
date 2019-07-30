@@ -156,7 +156,7 @@ public:
     return graph(basis::simple(dim), unitcell::simple(dim), length);
   }
 
-  void print(std::ostream& os) const {
+  void print() const {
     std::cout << "dimension: " << dimension() << std::endl
               << "number of sites: " << num_sites() << std::endl
               << "number of bonds: " << num_bonds() << std::endl;
