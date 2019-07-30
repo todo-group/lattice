@@ -156,19 +156,19 @@ public:
     return graph(basis::simple(dim), unitcell::simple(dim), length);
   }
 
-  void print(std::ostream& os) const {
-    std::cout << "dimension: " << dimension() << std::endl
-              << "number of sites: " << num_sites() << std::endl
-              << "number of bonds: " << num_bonds() << std::endl;
+  void print(std::ostream& os = std::cout) const {
+    os << "dimension: " << dimension() << std::endl
+       << "number of sites: " << num_sites() << std::endl
+       << "number of bonds: " << num_bonds() << std::endl;
     for (std::size_t s = 0; s < num_sites(); ++s) {
-      std::cout << "site: " << s << " type: " << site_type(s) << ' '
-                << "( " << coordinate(s).transpose() << " ) neighbors[ ";
+      os << "site: " << s << " type: " << site_type(s) << ' '
+         << "( " << coordinate(s).transpose() << " ) neighbors[ ";
       for (std::size_t k = 0; k < num_neighbors(s); ++k)
-        std::cout << neighbor(s, k) << ' ';
-      std::cout << "] neighbor_bonds[ ";
+        os << neighbor(s, k) << ' ';
+      os << "] neighbor_bonds[ ";
       for (std::size_t k = 0; k < num_neighbors(s); ++k)
-        std::cout << neighbor_bond(s, k) << ' ';
-      std::cout << "]\n";
+        os << neighbor_bond(s, k) << ' ';
+      os << "]\n";
     }
   }
   
