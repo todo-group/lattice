@@ -139,10 +139,27 @@ class unitcell:
                     return False
         return True
 
+def meanfield(unitcell, cutoff):
+    """
+    Calculate critical temperature by mean-field approximation
+    for Ising and Heisenberg models
+    """
+    # create zJ matrix
+    dim = len(unitcell.sites)
+    zJ = np.zeros([dim,dim], order='F')
+    for source, target, offset, bond_type in unitcell.bonds:
+        if abs(unitcell.coupling_constants[bond_type]) > cutoff:
+            zJ[source-1][target-1] += unitcell.coupling_constants[bond_type]
+            zJ[target-1][source-1] += unitcell.coupling_constants[bond_type]
+    # diagonalize zJ matrix
+    w, v = np.linalg.eigh(zJ)
+    tc = max(w)
+    return [tc, tc/3]
+
 if __name__ == '__main__':
     import sys
     if (len(sys.argv) <= 2):
-        print('Error: {} path name'.format(sys.argv[0]))
+        print('Error: {} path name [cutoff]'.format(sys.argv[0]))
         sys.exit(127)
     path = sys.argv[1]
     name = sys.argv[2]
@@ -216,3 +233,7 @@ if __name__ == '__main__':
             if (abs(p.coupling_constants[i]) > cutoff):
                 print('  type {}: J = {}'.format(i, p.coupling_constants[i]))
                 f.write('{} {}\n'.format(i, p.coupling_constants[i]))
+
+    tc0, tc1 = meanfield(p, cutoff)
+    print('Tc (Ising) =', tc0)
+    print('Tc (Heisenberg) =', tc1)
