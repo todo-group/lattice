@@ -115,6 +115,8 @@ public:
   std::size_t add_bond(std::size_t s, std::size_t t, int tp) {
     if (s >= sites_.size() || t >= sites_.size())
       throw std::invalid_argument("site index out of range");
+    if (s == t)
+      throw std::invalid_argument("self loop is not allowed");
     std::size_t b = bonds_.size();
     bonds_.push_back(bond_t(s, t, tp));
     sites_[s].neighbors.push_back(t);
