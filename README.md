@@ -114,3 +114,9 @@ make test
       read_xml(pt, "simple2d", cell);
       lattice::graph lat(bs, cell, lattice::extent(4, 4));
       ```
+
+* fully connected lattice of 10 sites
+
+  ```
+  lattice::graph lat = lattice::graph::fully_connected(2, 10);
+  ```

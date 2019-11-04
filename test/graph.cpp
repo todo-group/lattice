@@ -101,3 +101,9 @@ TEST(GraphTest, SkewedSquareOpen) {
   lat.print(std::cout);
   check(lat);
 }
+
+TEST(GraphTest, FullyConnected) {
+  graph lat = graph::fully_connected(10);
+  lat.print(std::cout);
+  check(lat);
+}

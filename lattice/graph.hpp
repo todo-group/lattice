@@ -153,6 +153,16 @@ public:
     return graph(basis::simple(dim), unitcell::simple(dim), length);
   }
 
+  static graph fully_connected(std::size_t num_sites) {
+    graph g(0);
+    coordinate_t pos(0);
+    for (unsigned int s = 0; s < num_sites; ++s) g.add_site(pos, 0);
+    for (unsigned int s = 0; s < num_sites; ++s) {
+      for (unsigned int t = s + 1; t < num_sites; ++t) g.add_bond(s, t, 0);
+    }
+    return g;
+  }
+  
   void print(std::ostream& os = std::cout) const {
     os << "dimension: " << dimension() << std::endl
        << "number of sites: " << num_sites() << std::endl
