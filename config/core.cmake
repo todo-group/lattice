@@ -5,6 +5,11 @@ if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     message(FATAL_ERROR "In source builds are disabled. Please use a separate build directory")
 endif()
 
+if(CONFIG)
+  message(STATUS "Loading configration: " ${CONFIG})
+  include(${CONFIG})
+endif(CONFIG)
+
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 

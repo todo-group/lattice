@@ -1,9 +1,10 @@
 # Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(standards NONE)
+project(lattice NONE)
 
-include(config/core.cmake)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
+include(core)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
