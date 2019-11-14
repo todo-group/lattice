@@ -118,5 +118,5 @@ make test
 * fully connected lattice of 10 sites
 
   ```
-  lattice::graph lat = lattice::graph::fully_connected(2, 10);
+  lattice::graph lat = lattice::graph::fully_connected(10);
   ```
