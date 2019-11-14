@@ -56,7 +56,7 @@ make test
   | std::size\_t source(std::size\_t b) const; | start point (site) of bond b |
   | std::size\_t target(std::size\_t b) const; | end point (site) of bond b |
   
-## How to constract lattices
+## How to construct lattices
 
 * periodic chain lattice of 16 sites
 
