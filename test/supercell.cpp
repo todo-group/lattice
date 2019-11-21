@@ -56,7 +56,7 @@ TEST(SupercellTest, TwoD1) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 7; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
@@ -99,7 +99,7 @@ TEST(SupercellTest, TwoD2) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 9; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
@@ -144,7 +144,7 @@ TEST(SupercellTest, TwoD3) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 9; crossing << -1, 0;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
@@ -189,7 +189,7 @@ TEST(SupercellTest, TwoD4) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 13; crossing << 0, -1;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
@@ -221,7 +221,7 @@ TEST(SupercellTest, TwoDSimple) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   offset_t crossing(2), crossing_r(2);
   source = 0; offset << 1, 0; target = 1; crossing << 0, 0;
   EXPECT_EQ(std::make_pair(target, crossing), supercell.add_offset(source, offset));
@@ -243,7 +243,7 @@ TEST(SupercellTest, ThreeD) {
 
   check(supercell);
 
-  std::size_t source, target, target_r;
+  std::size_t source, target;
   source = 0; offset << 1, 0, 0; target = 12;
   EXPECT_EQ(target, supercell.add_offset(source, offset).first);
   source = 0; offset << 0, 1, 0; target = 1;

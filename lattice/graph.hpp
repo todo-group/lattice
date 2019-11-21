@@ -87,7 +87,6 @@ public:
     }
     for (std::size_t c = 0; c < super.num_cells(); ++c) {
       for (std::size_t u = 0; u < cell.num_bonds(); ++u) {
-        std::size_t b = bonds_.size();
         std::size_t s = c * cell.num_sites() + cell.bond(u).source;
         std::size_t target_cell;
         offset_t cross;

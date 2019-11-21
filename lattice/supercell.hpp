@@ -44,7 +44,7 @@ public:
 
     nmin_ = offset_t::Zero(dim_);
     nmax_ = offset_t::Zero(dim_);
-    for (std::size_t i = 0; i < (1 << dim_); ++i) {
+    for (std::size_t i = 0; i < std::size_t(1 << dim_); ++i) {
       for (std::size_t m = 0; m < dim_; ++m) {
         long v = 0;
         for (std::size_t n = 0; n < dim_; ++n) v += ((i >> n) & 1) * span_(m, n);

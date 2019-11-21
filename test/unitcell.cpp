@@ -24,9 +24,9 @@ TEST(UnitcellTest, SimpleSquare1) {
   coordinate_t pos(2); pos << 0.0, 0.0;
   auto s0 = unitcell.add_site(pos, 0);
   offset_t offset_x(2); offset_x << 1, 0;
-  auto b0 = unitcell.add_bond(s0, s0, offset_x, 0);
+  unitcell.add_bond(s0, s0, offset_x, 0);
   offset_t offset_y(2); offset_y << 0, 1;
-  auto b1 = unitcell.add_bond(s0, s0, offset_y, 0);
+  unitcell.add_bond(s0, s0, offset_y, 0);
 
   EXPECT_EQ(2, unitcell.dimension());
   EXPECT_EQ(1, unitcell.num_sites());
