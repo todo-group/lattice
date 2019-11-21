@@ -1,4 +1,4 @@
-![](https://github.com/todo-group/lattice/workflows/build/badge.svg)
+![https://github.com/todo-group/lattice/actions?query=workflow%3Abuild](https://github.com/todo-group/lattice/workflows/build/badge.svg)
 
 # lattice
 
