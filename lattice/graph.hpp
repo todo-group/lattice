@@ -103,7 +103,7 @@ public:
   }
 
   std::size_t add_site(const coordinate_t& pos, int tp) {
-    if (pos.size() != dim_)
+    if (std::size_t(pos.size()) != dim_)
       throw std::invalid_argument("dimension mismatch");
     std::size_t s = sites_.size();
     sites_.push_back(tp);
