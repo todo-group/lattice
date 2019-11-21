@@ -44,19 +44,19 @@ int main() {
   // measurements
   observable energy, mag2;
   
-  int sweeps = 65536;
-  int therm = sweeps / 8;
-  for (int mcs = 0; mcs < therm + sweeps; ++mcs) {
+  std::size_t sweeps = 65536;
+  std::size_t therm = sweeps / 8;
+  for (std::size_t mcs = 0; mcs < therm + sweeps; ++mcs) {
     // metropolis update
-    for (int s = 0; s < lat.num_sites(); ++s) {
+    for (std::size_t s = 0; s < lat.num_sites(); ++s) {
       double diff = 0.0;
-      for (int k = 0; k < lat.num_neighbors(s); ++k)
+      for (std::size_t k = 0; k < lat.num_neighbors(s); ++k)
         diff += 2 * spins[s] * spins[lat.neighbor(s, k)];
       if (uniform_01(eng) < std::exp(- beta * diff)) spins[s] = - spins[s];
     }
     if (mcs > therm) {
       double ene = 0;
-      for (int b = 0; b < lat.num_bonds(); ++b)
+      for (std::size_t b = 0; b < lat.num_bonds(); ++b)
         ene -= spins[lat.source(b)] * spins[lat.target(b)];
       energy << ene / lat.num_sites();
       double mag = std::accumulate(spins.begin(), spins.end(), 0.0) / lat.num_sites();
