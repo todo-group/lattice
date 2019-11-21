@@ -1,3 +1,5 @@
+![](https://github.com/todo-group/lattice/workflows/build/badge.svg)
+
 # lattice
 
 Simple Lattice/Graph Library
