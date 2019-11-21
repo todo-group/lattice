@@ -63,7 +63,7 @@ public:
   }
   
   std::size_t add_site(const coordinate_t& pos, int tp) {
-    if (pos.size() != dimension())
+    if (std::size_t(pos.size()) != dimension())
       throw std::invalid_argument("site coordinate dimension mismatch");
     for (std::size_t i = 0; i < dimension(); ++i) {
       if (pos[i] < 0 || pos[i] >= 1.0)
@@ -77,7 +77,7 @@ public:
   std::size_t add_bond(std::size_t s, std::size_t t, const offset_t& os, int tp) {
     if (s >= num_sites() || t >= num_sites())
       throw std::invalid_argument("site index out of range");
-    if (os.size() != dimension())
+    if (std::size_t(os.size()) != dimension())
       throw std::invalid_argument("unitcell offset dimension mismatch");
     std::size_t b = bonds_.size();
     bonds_.push_back(bond_t(s, t, os, tp));
