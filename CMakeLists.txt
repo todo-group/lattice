@@ -1,5 +1,3 @@
-# Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(lattice NONE)
 
@@ -20,8 +18,8 @@ endif(Boost_FOUND)
 
 # Google Test
 set(GOOGLETEST_VERSION 1)
-add_subdirectory(tool/googletest/googletest)
-include_directories(tools/googletest/googletest/include)
+add_subdirectory(googletest)
+include_directories(googletest/include)
 enable_testing()
 
 add_subdirectory(test)
