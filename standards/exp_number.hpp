@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#pragma oncen
+#pragma once
 
 #include <cmath>
 #include <iostream>

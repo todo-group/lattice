@@ -1,8 +1,9 @@
 #!/bin/sh
 
+LIBS="googletest standards"
+
 BASEDIR=$(cd "$(dirname $0)"; pwd)
-SCRIPTS=$(find ${BASEDIR}/setup -name "*.sh")
-echo ${SCRIPTS}
-for i in ${SCRIPTS}; do
-  env BASEDIR=${BASEDIR} sh $i
+for i in ${LIBS}; do
+  echo "[${i}]"
+  env BASEDIR=${BASEDIR} sh ${BASEDIR}/config/${i}.sh
 done
