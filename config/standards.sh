@@ -1,6 +1,6 @@
 #!/bin/sh
 
-STANDARDS_VERSION=0.1
+STANDARDS_VERSION=0.2
 
 # standards
 
