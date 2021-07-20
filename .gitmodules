@@ -1,0 +1,6 @@
+[submodule "standards"]
+	path = standards
+	url = https://github.com/todo-group/standards.git
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest
