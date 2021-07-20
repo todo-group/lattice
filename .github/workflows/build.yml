@@ -5,11 +5,13 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: checkout
+      uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         submodules: true
     - name: install eigen3
       run: sudo apt-get install libeigen3-dev
