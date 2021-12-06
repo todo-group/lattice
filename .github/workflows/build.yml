@@ -10,9 +10,6 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        submodules: true
     - name: install eigen3
       run: sudo apt-get install libeigen3-dev
     - name: install boost
