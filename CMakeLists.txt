@@ -8,7 +8,7 @@ option(LATTICE_BUILD_EXAMPLES "Build all lattice's examples." ON)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(core)
 
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${lattice_SOURCE_DIR})
 enable_testing()
 
 include(googletest)
