@@ -1,6 +1,4 @@
-# Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
-
-set(PROGS basis extent unitcell supercell graph)
+set(PROGS basis coloring extent unitcell supercell graph)
 if(Boost_FOUND)
   list(APPEND PROGS basis_xml unitcell_xml graph_xml)
 endif(Boost_FOUND)
