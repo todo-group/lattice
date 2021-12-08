@@ -9,12 +9,9 @@ option(LATTICE_BUILD_EXAMPLES "Build all lattice's examples." ON)
 
 include_directories(${lattice_SOURCE_DIR})
 
+include(eigen3)
 include(googletest)
-FetchContent_MakeAvailable(googletest)
-
-# Eigen3  
-find_package(Eigen3 REQUIRED)
-include(${EIGEN3_USE_FILE})
+FetchContent_MakeAvailable(${FetchContents})
 
 # Boost
 find_package(Boost)
