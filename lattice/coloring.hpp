@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2019-2021 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+   Copyright (C) 2019-2022 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 
 namespace lattice {
 
-std::vector<unsigned int> coloring(const graph& lat) {
+inline std::vector<unsigned int> coloring(const graph& lat) {
   std::vector<unsigned int> color(lat.num_sites(), 2);
   std::stack<unsigned int> stck;
   color[0] = 0;

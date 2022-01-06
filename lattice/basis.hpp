@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+   Copyright (C) 2019-2022 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ private:
   basis_t basis_;
 };
 
-std::size_t dimension(const basis& bs) {
+inline std::size_t dimension(const basis& bs) {
   return bs.dimension();
 }
   

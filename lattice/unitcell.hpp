@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+   Copyright (C) 2019-2022 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ private:
   
 };
 
-std::size_t dimension(const unitcell& cell) {
+inline std::size_t dimension(const unitcell& cell) {
   return cell.dimension();
 }
 

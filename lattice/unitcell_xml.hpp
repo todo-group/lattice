@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+   Copyright (C) 2019-2022 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ namespace lattice {
 
 using boost::property_tree::ptree;
 
-ptree& operator>>(ptree& pt, unitcell& cell) {
+inline ptree& operator>>(ptree& pt, unitcell& cell) {
   std::size_t dim = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
     dim = stoi(str.get());
@@ -114,7 +114,7 @@ ptree& operator>>(ptree& pt, unitcell& cell) {
   return pt;
 }
 
-ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell) {
+inline ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell) {
   ptree& root = pt.add("UNITCELL", "");
   root.put("<xmlattr>.name", name);
   root.put("<xmlattr>.dimension", cell.dimension());
@@ -143,7 +143,7 @@ ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell) {
   return pt;
 }
 
-bool read_xml(ptree& pt, const std::string& name, unitcell& cell) {
+inline bool read_xml(ptree& pt, const std::string& name, unitcell& cell) {
   for (auto& child : pt.get_child("LATTICES")) {
     if (child.first == "UNITCELL") {
       if (auto str = child.second.get_optional<std::string>("<xmlattr>.name")) {

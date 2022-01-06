@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2019 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+   Copyright (C) 2019-2022 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace lattice {
 
 using boost::property_tree::ptree;
 
-ptree& operator>>(ptree& pt, graph& lat) {
+inline ptree& operator>>(ptree& pt, graph& lat) {
   std::size_t dim = 0;
   if (auto str = pt.get_optional<std::string>("<xmlattr>.dimension")) {
     dim = stoi(str.get());
@@ -92,7 +92,7 @@ ptree& operator>>(ptree& pt, graph& lat) {
   return pt;
 }
 
-ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
+inline ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
   ptree& root = pt.add("GRAPH", "");
   root.put("<xmlattr>.name", name);
   if (lat.dimension() > 0) root.put("<xmlattr>.dimension", lat.dimension());
@@ -117,7 +117,7 @@ ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
   return pt;
 }
 
-bool read_xml(ptree& pt, const std::string& name, graph& lat) {
+inline bool read_xml(ptree& pt, const std::string& name, graph& lat) {
   for (auto& child : pt.get_child("LATTICES")) {
     if (child.first == "GRAPH") {
       if (auto str = child.second.get_optional<std::string>("<xmlattr>.name")) {
