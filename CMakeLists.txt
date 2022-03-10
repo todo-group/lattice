@@ -3,7 +3,8 @@ include(cmake/prefix.cmake)
 project(lattice CXX)
 include(cmake/postfix.cmake)
 
-include_directories(${lattice_SOURCE_DIR})
+add_library(lattice INTERFACE)
+target_include_directories(lattice INTERFACE ${PROJECT_SOURCE_DIR})
 
 include(eigen3)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -12,9 +13,6 @@ endif()
 FetchContent_MakeAvailable(${FetchContents})
 
 find_package(Boost)
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-endif()
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   add_subdirectory(test)
