@@ -3,25 +3,20 @@ include(cmake/prefix.cmake)
 project(lattice CXX)
 include(cmake/postfix.cmake)
 
-option(LATTICE_INSTALL "Install lattice." ON)
-option(LATTICE_BUILD_TESTS "Build all lattice's tests." ON)
-option(LATTICE_BUILD_EXAMPLES "Build all lattice's examples." ON)
-
 include_directories(${lattice_SOURCE_DIR})
 
 include(eigen3)
-include(googletest)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(googletest)
+endif()
 FetchContent_MakeAvailable(${FetchContents})
 
-# Boost
 find_package(Boost)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
-endif(Boost_FOUND)
+endif()
 
-if(LATTICE_BUILD_TESTS)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   add_subdirectory(test)
-endif(LATTICE_BUILD_TESTS)
-if(LATTICE_BUILD_EXAMPLES)
   add_subdirectory(example)
-endif(LATTICE_BUILD_EXAMPLES)
+endif()
