@@ -6,7 +6,7 @@ if(NOT DEVCORE_PREFIX_CMAKE_INCLUDED)
 
   if(CONFIG)
     message(STATUS "Loading compiler configration: " ${CONFIG})
-    include(cmake/${CONFIG}.cmake)
+    include(cmake/config-${CONFIG}.cmake)
   else(CONFIG)
     if(NOT CMAKE_C_COMPILER)
       set(CMAKE_C_COMPILER "gcc" CACHE STRING "" FORCE)
@@ -18,5 +18,8 @@ if(NOT DEVCORE_PREFIX_CMAKE_INCLUDED)
       set(CMAKE_Fortran_COMPILER "gfortran" CACHE STRING "" FORCE)
     endif(NOT CMAKE_Fortran_COMPILER)
   endif(CONFIG)
+
+  set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+
   set(DEVCORE_PREFIX_CMAKE_INCLUDED TRUE)
 endif(NOT DEVCORE_PREFIX_CMAKE_INCLUDED)
