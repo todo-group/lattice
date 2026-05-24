@@ -95,7 +95,6 @@ cmake --build --preset macos-sdk154-smoke
 Build and run Rust tests:
 
 ```
-cd rust
 cargo build
 cargo test
 ```
@@ -103,7 +102,6 @@ cargo test
 Run Rust sample:
 
 ```
-cd rust
 cargo run -p lattice-core --example simple
 ```
 

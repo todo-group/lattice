@@ -33,5 +33,5 @@
 
 /build/
 /build-*/
-/rust/Cargo.lock
-/rust/target/
+/Cargo.lock
+/target/

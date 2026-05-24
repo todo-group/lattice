@@ -6,12 +6,20 @@ endif()
 message(STATUS "Rust FFI artifacts missing; running cargo build")
 file(MAKE_DIRECTORY "${LATTICE_RUST_CARGO_TARGET_DIR}")
 file(REMOVE_RECURSE "${LATTICE_RUST_WORKSPACE_STAGING_DIR}")
+file(MAKE_DIRECTORY "${LATTICE_RUST_WORKSPACE_STAGING_DIR}")
 execute_process(
-  COMMAND "${CMAKE_COMMAND}" -E copy_directory "${LATTICE_RUST_WORK_DIR}" "${LATTICE_RUST_WORKSPACE_STAGING_DIR}"
-  RESULT_VARIABLE LATTICE_STAGE_RESULT
+  COMMAND "${CMAKE_COMMAND}" -E copy "${LATTICE_RUST_MANIFEST}" "${LATTICE_RUST_WORKSPACE_STAGING_DIR}/Cargo.toml"
+  RESULT_VARIABLE LATTICE_STAGE_MANIFEST_RESULT
 )
-if(NOT LATTICE_STAGE_RESULT EQUAL 0)
-  message(FATAL_ERROR "failed to stage Rust workspace into build directory")
+if(NOT LATTICE_STAGE_MANIFEST_RESULT EQUAL 0)
+  message(FATAL_ERROR "failed to stage Rust workspace manifest into build directory")
+endif()
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory "${LATTICE_RUST_ROOT_DIR}/rust" "${LATTICE_RUST_WORKSPACE_STAGING_DIR}/rust"
+  RESULT_VARIABLE LATTICE_STAGE_RUST_RESULT
+)
+if(NOT LATTICE_STAGE_RUST_RESULT EQUAL 0)
+  message(FATAL_ERROR "failed to stage Rust workspace sources into build directory")
 endif()
 set(LATTICE_STAGED_MANIFEST "${LATTICE_RUST_WORKSPACE_STAGING_DIR}/Cargo.toml")
 execute_process(

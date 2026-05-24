@@ -35,4 +35,4 @@ jobs:
     - name: run rust xml smoke
       run: ./build-rustxml/test/rust_xml_bridge
     - name: cargo test
-      run: cd rust && cargo test
+      run: cargo test

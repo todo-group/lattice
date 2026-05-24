@@ -11,7 +11,7 @@ set(LATTICE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/lattice)
 option(LATTICE_BUILD_TESTS "Build C++ tests" OFF)
 
 add_library(lattice INTERFACE)
-target_include_directories(lattice INTERFACE ${PROJECT_SOURCE_DIR})
+target_include_directories(lattice INTERFACE ${PROJECT_SOURCE_DIR}/cxx)
 
 set(LATTICE_RUST_FFI_RELEASE_LIB
   ${CMAKE_BINARY_DIR}/rust-target/release/${CMAKE_SHARED_LIBRARY_PREFIX}lattice_ffi${CMAKE_SHARED_LIBRARY_SUFFIX}
@@ -31,7 +31,8 @@ if(LATTICE_CARGO_EXECUTABLE)
       -DLATTICE_RUST_FFI_DEBUG_LIB=${LATTICE_RUST_FFI_DEBUG_LIB}
       -DLATTICE_RUST_FFI_RELEASE_LIB=${LATTICE_RUST_FFI_RELEASE_LIB}
       -DLATTICE_RUST_WORK_DIR=${PROJECT_SOURCE_DIR}/rust
-      -DLATTICE_RUST_MANIFEST=${PROJECT_SOURCE_DIR}/rust/Cargo.toml
+      -DLATTICE_RUST_ROOT_DIR=${PROJECT_SOURCE_DIR}
+      -DLATTICE_RUST_MANIFEST=${PROJECT_SOURCE_DIR}/Cargo.toml
       -DLATTICE_RUST_CARGO_TARGET_DIR=${LATTICE_RUST_CARGO_TARGET_DIR}
       -DLATTICE_RUST_WORKSPACE_STAGING_DIR=${LATTICE_RUST_WORKSPACE_STAGING_DIR}
       -P ${PROJECT_SOURCE_DIR}/cmake/build_rust_ffi_if_needed.cmake
@@ -64,9 +65,9 @@ FetchContent_MakeAvailable(${FetchContents})
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   if(LATTICE_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(cxx/test test)
   endif()
-  add_subdirectory(example)
+  add_subdirectory(cxx/example example)
 endif()
 
 if(LATTICE_CARGO_EXECUTABLE)
@@ -97,7 +98,7 @@ configure_file(
   @ONLY
 )
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/lattice/
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/cxx/lattice/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/lattice
   FILES_MATCHING
   PATTERN "*.hpp"
