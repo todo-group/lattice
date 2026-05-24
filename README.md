@@ -1,4 +1,8 @@
-![](https://github.com/todo-group/lattice/workflows/build/badge.svg)
+[![Build](https://github.com/todo-group/lattice/actions/workflows/build.yml/badge.svg)](https://github.com/todo-group/lattice/actions/workflows/build.yml)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C.svg)](https://isocpp.org/)
+[![Rust](https://img.shields.io/badge/Rust-stable-000000.svg)](https://www.rust-lang.org/)
+[![Author](https://img.shields.io/badge/Author-Synge%20Todo-blue)](https://github.com/wistaria)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE-2.0.txt)
 
 # lattice
 
@@ -64,12 +68,12 @@ ctest --test-dir build --output-on-failure
 Run C++ samples:
 
 ```
-./example/construct1
-./example/construct2
-./example/construct3
-./example/construct4
-./example/construct_xml
-./example/ising
+./build/example/construct1
+./build/example/construct2
+./build/example/construct3
+./build/example/construct4
+./build/example/construct_xml
+./build/example/ising
 ```
 
 ### Recommended on macOS (fixed SDK)
@@ -146,7 +150,7 @@ pkg-config --cflags --libs lattice
 Compile example:
 
 ```sh
-c++ -std=c++14 main.cpp $(pkg-config --cflags --libs lattice) -o app
+c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
 ```
 
 ## Classes/types
