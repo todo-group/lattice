@@ -31,4 +31,7 @@
 *.out
 *.app
 
-build
+/build/
+/build-*/
+/Cargo.lock
+/target/

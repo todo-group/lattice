@@ -14,8 +14,11 @@
    limitations under the License.
 */
 
+#include <cstdlib>
 #include <iostream>
+#include "lattice/basis_xml.hpp"
 #include "lattice/graph_xml.hpp"
+#include "lattice/unitcell_xml.hpp"
 
 int main(int argc, char **argv) {
   std::string file = "lattices.xml";
@@ -34,13 +37,16 @@ int main(int argc, char **argv) {
     }
   }
 
-  std::ifstream is(file);
-  boost::property_tree::ptree pt;
-  read_xml(is, pt);
   lattice::basis bs;
-  read_xml(pt, basis_name, bs);
+  if (!read_xml_file(file, basis_name, bs)) {
+    std::cerr << "Failed to read basis XML entry: " << basis_name << "\n";
+    exit(127);
+  }
   lattice::unitcell cell;
-  read_xml(pt, cell_name, cell);
+  if (!read_xml_file(file, cell_name, cell)) {
+    std::cerr << "Failed to read unitcell XML entry: " << cell_name << "\n";
+    exit(127);
+  }
   switch (cell.dimension()) {
   case 1:
     { lattice::graph lat(bs, cell, lattice::extent(length)); lat.print(std::cout); }

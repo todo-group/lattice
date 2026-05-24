@@ -1,0 +1,18 @@
+@PACKAGE_INIT@
+
+set_and_check(LATTICE_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(LATTICE_LIBRARY_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@")
+set(_lattice_ffi "${LATTICE_LIBRARY_DIR}/@CMAKE_SHARED_LIBRARY_PREFIX@lattice_ffi@CMAKE_SHARED_LIBRARY_SUFFIX@")
+
+if(NOT TARGET lattice::lattice)
+  add_library(lattice::lattice INTERFACE IMPORTED)
+  set_target_properties(lattice::lattice PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${LATTICE_INCLUDE_DIR}"
+    INTERFACE_LINK_LIBRARIES "${_lattice_ffi}"
+  )
+endif()
+
+set(LATTICE_INCLUDE_DIRS "${LATTICE_INCLUDE_DIR}")
+set(LATTICE_LIBRARIES lattice::lattice)
+
+check_required_components(lattice)

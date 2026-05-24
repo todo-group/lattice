@@ -13,19 +13,140 @@ Simple Lattice/Graph Library
 
 ## Prerequisites
 
-* C++-14 compiler
-* CMake to build tests and examples
-* Eigen3
-* [optional] Boost Library (Property Tree) for reading and writing XML files
+### For C++
 
-## How to build tests and examples and run tests
+* C++-17 compiler
+* CMake (>= 3.14)
+* Eigen3
+
+### For Rust
+
+* Rust toolchain (`rustc`, `cargo`)
+
+Note: C++ build may invoke cargo automatically to build `rust/lattice-ffi` when the shared library is missing.
+
+## Rust workspace (work in progress)
+
+The repository is being extended with a Rust core under `rust/` as the shared implementation base for future Python and Julia bindings.
+
+### C++ XML compatibility bridge (default)
+
+Rust-backed XML implementation is now the default C++ XML backend.
+
+When building C++ targets, CMake automatically builds `rust/lattice-ffi` with cargo if the required shared library is missing.
+
+Rust targets are managed in the workspace under `rust/`:
+
+* `lattice-core`: core model + XML parser/writer
+* `lattice-ffi`: C ABI layer for C++ compatibility
+
+## Build, test, and sample run
+
+### C++ (default)
+
+Configure and build:
+
+```sh
+cmake -S . -B build
+cmake --build build
+```
+
+Run C++ tests:
+
+Enable tests at configure time, then run `ctest`:
 
 ```
-mkdir build
-cd build
-cmake ..
-make
-make test
+cmake -S . -B build -DLATTICE_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+Run C++ samples:
+
+```
+./example/construct1
+./example/construct2
+./example/construct3
+./example/construct4
+./example/construct_xml
+./example/ising
+```
+
+### Recommended on macOS (fixed SDK)
+
+Use CMake presets to pin the SDK to `MacOSX15.4.sdk`:
+
+```
+cmake --preset macos-sdk154
+cmake --build --preset macos-sdk154
+ctest --preset macos-sdk154
+```
+
+### Rust XML smoke test (C++ compatibility path)
+
+```
+cmake --preset macos-sdk154
+cmake --build --preset macos-sdk154-smoke
+./build-sdk154/test/rust_xml_bridge
+```
+
+### Rust
+
+Build and run Rust tests:
+
+```
+cargo build
+cargo test
+```
+
+Run Rust sample:
+
+```
+cargo run -p lattice-core --example simple
+```
+
+## Using Installed Package
+
+Install into a prefix:
+
+```sh
+cmake --install build-sdk154 --prefix /path/to/prefix
+```
+
+### CMake find_package(lattice)
+
+Set `CMAKE_PREFIX_PATH` to the install prefix and use `find_package`:
+
+```cmake
+cmake_minimum_required(VERSION 3.14)
+project(lattice_consumer CXX)
+
+find_package(lattice REQUIRED)
+
+add_executable(app main.cpp)
+target_link_libraries(app PRIVATE lattice::lattice)
+```
+
+Configure example:
+
+```sh
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/prefix
+cmake --build build
+```
+
+### pkg-config
+
+Set `PKG_CONFIG_PATH` and query compile/link flags:
+
+```sh
+export PKG_CONFIG_PATH=/path/to/prefix/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --cflags --libs lattice
+```
+
+Compile example:
+
+```sh
+c++ -std=c++14 main.cpp $(pkg-config --cflags --libs lattice) -o app
 ```
 
 ## Classes/types
@@ -107,13 +228,10 @@ make test
    
       ```
       std::string file = "lattices.xml";
-      std::ifstream is(file);
-      boost::property_tree::ptree pt;
-      read_xml(is, pt);
       lattice::basis bs;
-      read_xml(pt, "square lattice", bs);
+      read_xml_file(file, "square lattice", bs);
       lattice::unitcell cell;
-      read_xml(pt, "simple2d", cell);
+      read_xml_file(file, "simple2d", cell);
       lattice::graph lat(bs, cell, lattice::extent(4, 4));
       ```
 

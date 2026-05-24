@@ -1,0 +1,10 @@
+[package]
+name = "lattice-core"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Rust core lattice data model for the lattice workspace"
+
+[dependencies]
+nalgebra = { version = "0.33", default-features = false, features = ["std"] }
+roxmltree = "0.20"

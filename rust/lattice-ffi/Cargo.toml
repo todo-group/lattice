@@ -1,0 +1,12 @@
+[package]
+name = "lattice-ffi"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "C ABI for lattice-core XML compatibility"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+lattice-core = { path = "../lattice-core" }
