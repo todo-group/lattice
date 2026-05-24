@@ -33,6 +33,6 @@ jobs:
     - name: build rust xml smoke
       run: cmake --build build-rustxml --target test_rust_xml_bridge
     - name: run rust xml smoke
-      run: ./build-rustxml/test/rust_xml_bridge
+      run: LD_LIBRARY_PATH="$PWD/build-rustxml/rust-target/debug:$PWD/build-rustxml/rust-target/release:${LD_LIBRARY_PATH:-}" ./build-rustxml/test/rust_xml_bridge
     - name: cargo test
       run: cargo test
