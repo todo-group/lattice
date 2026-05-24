@@ -13,9 +13,17 @@ Simple Lattice/Graph Library
 
 ## Prerequisites
 
-* C++-14 compiler
-* CMake to build tests and examples
+### For C++
+
+* C++-17 compiler
+* CMake (>= 3.14)
 * Eigen3
+
+### For Rust
+
+* Rust toolchain (`rustc`, `cargo`)
+
+Note: C++ build may invoke cargo automatically to build `rust/lattice-ffi` when the shared library is missing.
 
 ## Rust workspace (work in progress)
 
@@ -25,9 +33,7 @@ The repository is being extended with a Rust core under `rust/` as the shared im
 
 Rust-backed XML implementation is now the default C++ XML backend.
 
-To also build the Rust C ABI library from CMake, enable:
-
-* `-DLATTICE_BUILD_RUST_FFI=ON`
+When building C++ targets, CMake automatically builds `rust/lattice-ffi` with cargo if the required shared library is missing.
 
 Rust targets are managed in the workspace under `rust/`:
 
@@ -40,17 +46,19 @@ Rust targets are managed in the workspace under `rust/`:
 
 Configure and build:
 
-```
-mkdir build
-cd build
-cmake ..
-cmake --build .
+```sh
+cmake -S . -B build
+cmake --build build
 ```
 
 Run C++ tests:
 
+Enable tests at configure time, then run `ctest`:
+
 ```
-ctest --output-on-failure
+cmake -S . -B build -DLATTICE_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
 ```
 
 Run C++ samples:
@@ -97,6 +105,50 @@ Run Rust sample:
 ```
 cd rust
 cargo run -p lattice-core --example simple
+```
+
+## Using Installed Package
+
+Install into a prefix:
+
+```sh
+cmake --install build-sdk154 --prefix /path/to/prefix
+```
+
+### CMake find_package(lattice)
+
+Set `CMAKE_PREFIX_PATH` to the install prefix and use `find_package`:
+
+```cmake
+cmake_minimum_required(VERSION 3.14)
+project(lattice_consumer CXX)
+
+find_package(lattice REQUIRED)
+
+add_executable(app main.cpp)
+target_link_libraries(app PRIVATE lattice::lattice)
+```
+
+Configure example:
+
+```sh
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/prefix
+cmake --build build
+```
+
+### pkg-config
+
+Set `PKG_CONFIG_PATH` and query compile/link flags:
+
+```sh
+export PKG_CONFIG_PATH=/path/to/prefix/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --cflags --libs lattice
+```
+
+Compile example:
+
+```sh
+c++ -std=c++14 main.cpp $(pkg-config --cflags --libs lattice) -o app
 ```
 
 ## Classes/types

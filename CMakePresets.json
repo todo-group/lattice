@@ -27,7 +27,7 @@
       },
       "cacheVariables": {
         "CMAKE_OSX_SYSROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk",
-        "LATTICE_BUILD_RUST_FFI": "ON"
+        "LATTICE_BUILD_TESTS": "ON"
       }
     }
   ],

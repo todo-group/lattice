@@ -1,0 +1,33 @@
+if(EXISTS "${LATTICE_RUST_FFI_DEBUG_LIB}" AND EXISTS "${LATTICE_RUST_FFI_RELEASE_LIB}")
+  message(STATUS "Rust FFI already built; skipping cargo build")
+  return()
+endif()
+
+message(STATUS "Rust FFI artifacts missing; running cargo build")
+file(MAKE_DIRECTORY "${LATTICE_RUST_CARGO_TARGET_DIR}")
+file(REMOVE_RECURSE "${LATTICE_RUST_WORKSPACE_STAGING_DIR}")
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory "${LATTICE_RUST_WORK_DIR}" "${LATTICE_RUST_WORKSPACE_STAGING_DIR}"
+  RESULT_VARIABLE LATTICE_STAGE_RESULT
+)
+if(NOT LATTICE_STAGE_RESULT EQUAL 0)
+  message(FATAL_ERROR "failed to stage Rust workspace into build directory")
+endif()
+set(LATTICE_STAGED_MANIFEST "${LATTICE_RUST_WORKSPACE_STAGING_DIR}/Cargo.toml")
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" -E env "CARGO_TARGET_DIR=${LATTICE_RUST_CARGO_TARGET_DIR}" "${LATTICE_CARGO_EXECUTABLE}" build --manifest-path "${LATTICE_STAGED_MANIFEST}" -p lattice-ffi
+  WORKING_DIRECTORY "${LATTICE_RUST_WORKSPACE_STAGING_DIR}"
+  RESULT_VARIABLE LATTICE_CARGO_DEBUG_RESULT
+)
+if(NOT LATTICE_CARGO_DEBUG_RESULT EQUAL 0)
+  message(FATAL_ERROR "cargo build failed for lattice-ffi (debug)")
+endif()
+
+execute_process(
+  COMMAND "${CMAKE_COMMAND}" -E env "CARGO_TARGET_DIR=${LATTICE_RUST_CARGO_TARGET_DIR}" "${LATTICE_CARGO_EXECUTABLE}" build --release --manifest-path "${LATTICE_STAGED_MANIFEST}" -p lattice-ffi
+  WORKING_DIRECTORY "${LATTICE_RUST_WORKSPACE_STAGING_DIR}"
+  RESULT_VARIABLE LATTICE_CARGO_RELEASE_RESULT
+)
+if(NOT LATTICE_CARGO_RELEASE_RESULT EQUAL 0)
+  message(FATAL_ERROR "cargo build failed for lattice-ffi (release)")
+endif()
