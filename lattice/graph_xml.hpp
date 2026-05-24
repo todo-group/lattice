@@ -17,6 +17,12 @@
 #ifndef LATTICE_GRAPH_XML_HPP
 #define LATTICE_GRAPH_XML_HPP
 
+#ifdef LATTICE_USE_RUST_XML
+
+#include "rust_xml_graph.hpp"
+
+#else
+
 #include <sstream>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -132,5 +138,7 @@ inline bool read_xml(ptree& pt, const std::string& name, graph& lat) {
 }
   
 } // end namespace lattice
+
+#endif // LATTICE_USE_RUST_XML
 
 #endif
