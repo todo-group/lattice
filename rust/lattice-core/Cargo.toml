@@ -3,7 +3,10 @@ name = "lattice-core"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "Rust core lattice data model for the lattice workspace"
+description = "Simple Lattice/Graph Library"
+repository = "https://github.com/todo-group/lattice"
+readme = "../../README.md"
+keywords = ["lattice", "graph", "physics"]
 
 [dependencies]
 nalgebra = { version = "0.33", default-features = false, features = ["std"] }

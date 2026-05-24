@@ -17,19 +17,20 @@ Simple Lattice/Graph Library
 
 ## Prerequisites
 
+### For Rust
+
+* Rust toolchain (`rustc`, `cargo`)
+
 ### For C++
 
 * C++-17 compiler
 * CMake (>= 3.14)
 * Eigen3
-
-### For Rust
-
-* Rust toolchain (`rustc`, `cargo`)
+* Rust toolchain (`rustc`, `cargo`) for auto-building `rust/lattice-ffi`
 
 Note: C++ build may invoke cargo automatically to build `rust/lattice-ffi` when the shared library is missing.
 
-## Rust workspace (work in progress)
+## Rust workspace
 
 The repository is being extended with a Rust core under `rust/` as the shared implementation base for future Python and Julia bindings.
 
@@ -45,6 +46,26 @@ Rust targets are managed in the workspace under `rust/`:
 * `lattice-ffi`: C ABI layer for C++ compatibility
 
 ## Build, test, and sample run
+
+### Rust
+
+Build and run Rust tests:
+
+```
+cargo build
+cargo test
+```
+
+Run Rust samples:
+
+```
+cargo run -p lattice-core --example construct1
+cargo run -p lattice-core --example construct2
+cargo run -p lattice-core --example construct3
+cargo run -p lattice-core --example construct4
+cargo run -p lattice-core --example construct_xml
+cargo run -p lattice-core --example ising
+```
 
 ### C++ (default)
 
@@ -76,7 +97,7 @@ Run C++ samples:
 ./build/example/ising
 ```
 
-### Recommended on macOS (fixed SDK)
+### Workaround for MacOSX26.sdk
 
 Use CMake presets to pin the SDK to `MacOSX15.4.sdk`:
 
@@ -84,29 +105,6 @@ Use CMake presets to pin the SDK to `MacOSX15.4.sdk`:
 cmake --preset macos-sdk154
 cmake --build --preset macos-sdk154
 ctest --preset macos-sdk154
-```
-
-### Rust XML smoke test (C++ compatibility path)
-
-```
-cmake --preset macos-sdk154
-cmake --build --preset macos-sdk154-smoke
-./build-sdk154/test/rust_xml_bridge
-```
-
-### Rust
-
-Build and run Rust tests:
-
-```
-cargo build
-cargo test
-```
-
-Run Rust sample:
-
-```
-cargo run -p lattice-core --example simple
 ```
 
 ## Using Installed Package
@@ -185,17 +183,91 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
   
 ## How to construct lattices
 
+### Rust
+
 * periodic chain lattice of 16 sites
 
   * simplest interface
 
-     ```
+    ```rust
+    use lattice_core::Graph;
+
+    let graph = Graph::simple(1, 16);
+    ```
+
+  * most generic interface
+
+    ```rust
+    use lattice_core::{Basis, BasisMatrix, Boundary, CoordinateVector, ExtentVector, Graph, OffsetVector, Unitcell};
+
+    let basis = Basis::new(BasisMatrix::from_row_slice(1, 1, &[1.0]));
+    let mut unitcell = Unitcell::new(1);
+    unitcell.add_site(CoordinateVector::from_element(1, 0.0), 0);
+    unitcell.add_bond(0, 0, OffsetVector::from_element(1, 1), 0);
+    let extent = ExtentVector::from_element(1, 16);
+    let boundary = vec![Boundary::Periodic; 1];
+    let graph = Graph::from_basis_unitcell_extent(&basis, &unitcell, &extent, &boundary);
+    ```
+
+* periodic square lattice of 4 x 4 sites
+
+  * simplest interface
+
+    ```rust
+    use lattice_core::Graph;
+
+    let graph = Graph::simple(2, 4);
+    ```
+
+  * most generic interface
+
+    ```rust
+    use lattice_core::{Basis, BasisMatrix, Boundary, CoordinateVector, ExtentVector, Graph, OffsetVector, Unitcell};
+
+    let basis = Basis::new(BasisMatrix::from_row_slice(2, 2, &[1.0, 0.0, 0.0, 1.0]));
+    let mut unitcell = Unitcell::new(2);
+    unitcell.add_site(CoordinateVector::from_vec(vec![0.0, 0.0]), 0);
+    unitcell.add_bond(0, 0, OffsetVector::from_vec(vec![1, 0]), 0);
+    unitcell.add_bond(0, 0, OffsetVector::from_vec(vec![0, 1]), 0);
+    let extent = ExtentVector::from_vec(vec![4, 4]);
+    let boundary = vec![Boundary::Periodic; 2];
+    let graph = Graph::from_basis_unitcell_extent(&basis, &unitcell, &extent, &boundary);
+    ```
+
+  * reading basis and unitcell from XML file
+
+    ```rust
+    use lattice_core::{read_basis_from_file, read_unitcell_from_file, Boundary, ExtentVector, Graph};
+
+    let file = "cxx/example/lattices.xml";
+    let basis = read_basis_from_file(file, "square lattice")?;
+    let cell = read_unitcell_from_file(file, "simple2d")?;
+    let extent = ExtentVector::from_vec(vec![4, 4]);
+    let boundary = vec![Boundary::Periodic; 2];
+    let graph = Graph::from_basis_unitcell_extent(&basis, &cell, &extent, &boundary);
+    ```
+
+* fully connected lattice of 10 sites
+
+  ```rust
+  use lattice_core::Graph;
+
+  let graph = Graph::fully_connected(10);
+  ```
+
+### C++
+
+* periodic chain lattice of 16 sites
+
+  * simplest interface
+
+    ```cpp
      lattice::graph lat = lattice::graph::simple(1, 16);
      ```
     
   * most generic interface
 
-     ```
+    ```cpp
      lattice::basis_t bs(1, 1); bs << 1; // 1x1 matrix
      lattice::basis basis(bs);
      lattice::unitcell unitcell(1);
@@ -210,13 +282,13 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
 
   * simplest interface
 
-     ```
+    ```cpp
      lattice::graph lat = lattice::graph::simple(2, 4);
      ```
     
   * most generic interface
 
-     ```
+    ```cpp
      lattice::basis_t bs(2, 2); bs << 1, 0, 0, 1; // 2x2 matrix
      lattice::basis basis(bs);
      lattice::unitcell unitcell(2);
@@ -230,7 +302,7 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
 
    * reading basis and unitcell from XML file
    
-      ```
+    ```cpp
       std::string file = "lattices.xml";
       lattice::basis bs;
       read_xml_file(file, "square lattice", bs);
@@ -241,6 +313,6 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
 
 * fully connected lattice of 10 sites
 
-  ```
+  ```cpp
   lattice::graph lat = lattice::graph::fully_connected(10);
   ```

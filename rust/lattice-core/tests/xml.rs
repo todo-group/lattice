@@ -1,11 +1,14 @@
 use lattice_core::{read_basis_from_str, read_graph_from_str, read_unitcell_from_str, write_basis_to_string, write_graph_to_string, write_unitcell_to_string, Basis, CoordinateVector, ExtentVector, Graph, Unitcell};
 use nalgebra::DMatrix;
 
-const LATICES_XML: &str = include_str!("../../../example/lattices.xml");
+const LATTICES_XML: &str = include_str!(concat!(
+  env!("CARGO_MANIFEST_DIR"),
+  "/../../cxx/example/lattices.xml"
+));
 
 #[test]
 fn read_basis_from_repository_sample() {
-  let basis = read_basis_from_str(LATICES_XML, "square lattice").expect("basis should parse");
+  let basis = read_basis_from_str(LATTICES_XML, "square lattice").expect("basis should parse");
   assert_eq!(basis.dimension(), 2);
   assert_eq!(basis.basis_vectors()[(0, 0)], 1.0);
   assert_eq!(basis.basis_vectors()[(1, 1)], 1.0);
@@ -13,7 +16,7 @@ fn read_basis_from_repository_sample() {
 
 #[test]
 fn read_unitcell_from_repository_sample() {
-  let cell = read_unitcell_from_str(LATICES_XML, "simple2d").expect("unitcell should parse");
+  let cell = read_unitcell_from_str(LATTICES_XML, "simple2d").expect("unitcell should parse");
   assert_eq!(cell.dimension(), 2);
   assert_eq!(cell.num_sites(), 1);
   assert_eq!(cell.num_bonds(), 2);
@@ -21,7 +24,7 @@ fn read_unitcell_from_repository_sample() {
 
 #[test]
 fn read_graph_from_repository_sample() {
-  let graph = read_graph_from_str(LATICES_XML, "triangle").expect("graph should parse");
+  let graph = read_graph_from_str(LATTICES_XML, "triangle").expect("graph should parse");
   assert_eq!(graph.num_sites(), 3);
   assert_eq!(graph.num_bonds(), 3);
 }
