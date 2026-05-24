@@ -20,8 +20,6 @@
 #include <string>
 #include "lattice/rust_xml_ffi.h"
 
-#ifdef LATTICE_USE_RUST_XML
-
 namespace {
 
 void Check(bool condition, const std::string& message) {
@@ -116,12 +114,3 @@ int main() {
     return 1;
   }
 }
-
-#else
-
-int main() {
-  std::cout << "rust_xml_bridge: SKIPPED (LATTICE_USE_RUST_XML is OFF)" << std::endl;
-  return 0;
-}
-
-#endif

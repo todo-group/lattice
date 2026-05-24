@@ -1,13 +1,13 @@
 #ifndef LATTICE_RUST_XML_GRAPH_HPP
 #define LATTICE_RUST_XML_GRAPH_HPP
 
+#include <fstream>
 #include "graph.hpp"
 #include "rust_xml.hpp"
 
 namespace lattice {
 
-inline bool read_xml(ptree& pt, const std::string& name, graph& lat) {
-  auto xml = detail::ptree_to_xml(pt);
+inline bool read_xml(const std::string& xml, const std::string& name, graph& lat) {
   auto raw = lattice_graph_from_xml(xml.c_str(), name.c_str());
   if (!raw) {
     return false;
@@ -25,7 +25,19 @@ inline bool read_xml(ptree& pt, const std::string& name, graph& lat) {
   return true;
 }
 
-inline ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
+inline bool read_xml(std::istream& is, const std::string& name, graph& lat) {
+  return read_xml(detail::read_stream(is), name, lat);
+}
+
+inline bool read_xml_file(const std::string& path, const std::string& name, graph& lat) {
+  std::ifstream is(path);
+  if (!is) {
+    return false;
+  }
+  return read_xml(is, name, lat);
+}
+
+inline std::string write_xml(const std::string& name, const graph& lat) {
   lattice_graph_raw raw{};
   raw.dim = lat.dimension();
   raw.num_sites = lat.num_sites();
@@ -50,11 +62,7 @@ inline ptree& write_xml(ptree& pt, const std::string& name, const graph& lat) {
   raw.bond_sources = bond_sources.data();
   raw.bond_targets = bond_targets.data();
   raw.bond_types = bond_types.data();
-  auto xml = detail::c_string(lattice_graph_to_xml(name.c_str(), &raw));
-  ptree parsed;
-  detail::xml_to_ptree(xml, parsed);
-  pt.add_child("LATTICES.GRAPH", parsed.get_child("LATTICES.GRAPH"));
-  return pt;
+  return detail::c_string(lattice_graph_to_xml(name.c_str(), &raw));
 }
 
 } // end namespace lattice

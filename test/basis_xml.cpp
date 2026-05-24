@@ -18,7 +18,6 @@
 #include "lattice/basis_xml.hpp"
 
 using namespace lattice;
-using boost::property_tree::ptree;
 
 class BasisIoTest : public testing::Test {
 public:
@@ -31,37 +30,27 @@ protected:
 };
 
 TEST_F(BasisIoTest, WriteXML) {
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-
-  write_xml(root, "simple1d", basis1);
-  write_xml(root, "simple2d", basis2);
-  write_xml(std::cerr, pt,
-    boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
+  const std::string xml = write_xml("simple1d", basis1);
+  EXPECT_FALSE(xml.empty());
+  EXPECT_NE(std::string::npos, xml.find("<LATTICES>"));
+  EXPECT_NE(std::string::npos, xml.find("name=\"simple1d\""));
 }
 
 TEST_F(BasisIoTest, ReadXML) {
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-
-  write_xml(root, "simple1d", basis1);
-  write_xml(root, "simple2d", basis2);
-
-  std::map<std::string, basis> lattices;
-  for (auto& child : pt.get_child("LATTICES")) {
-    if (child.first == "LATTICE") {
-      std::string name;
-      basis bs;
-      child.second >> bs;
-      lattices[name] = bs;
-    }
-  }
-  EXPECT_EQ(basis1.basis_vectors(), lattices["simple1d"].basis_vectors());
-  EXPECT_EQ(basis2.basis_vectors(), lattices["simple2d"].basis_vectors());
+  const std::string xml = R"(
+<LATTICES>
+  <LATTICE name="simple1d" dimension="1">
+    <BASIS><VECTOR>1</VECTOR></BASIS>
+  </LATTICE>
+  <LATTICE name="simple2d" dimension="2">
+    <BASIS><VECTOR>1 0</VECTOR><VECTOR>0 1</VECTOR></BASIS>
+  </LATTICE>
+</LATTICES>
+  )";
 
   basis bs;
-  EXPECT_TRUE(read_xml(pt, "simple1d", bs));
+  EXPECT_TRUE(read_xml(xml, "simple1d", bs));
   EXPECT_EQ(basis1.basis_vectors(), bs.basis_vectors());
-  EXPECT_TRUE(read_xml(pt, "simple2d", bs));
+  EXPECT_TRUE(read_xml(xml, "simple2d", bs));
   EXPECT_EQ(basis2.basis_vectors(), bs.basis_vectors());
 }

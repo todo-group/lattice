@@ -18,33 +18,27 @@
 #include "lattice/graph_xml.hpp"
 
 using namespace lattice;
-using boost::property_tree::ptree;
 
 TEST(GraphXMLTest, WriteXML) {
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-
-  write_xml(root, "square lattice", graph::simple(2, 4));
-  write_xml(std::cerr, pt,
-    boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
+  const std::string xml = write_xml("square lattice", graph::simple(2, 4));
+  EXPECT_FALSE(xml.empty());
+  EXPECT_NE(std::string::npos, xml.find("<GRAPH"));
 }
 
 TEST(GraphXMLTest, ReadXML1) {
   std::istringstream is(R"(
+<LATTICES>
 <GRAPH name="5-site dimerized" vertices="5">
   <EDGE type="0" source="1" target="2"/>
   <EDGE type="1" source="2" target="3"/>
   <EDGE type="0" source="3" target="4"/>
   <EDGE type="1" source="4" target="5"/>
 </GRAPH>
+</LATTICES>
     )");
 
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-  read_xml(is, root);
-
   graph lat;
-  EXPECT_TRUE(read_xml(pt, "5-site dimerized", lat));
+  EXPECT_TRUE(read_xml(is, "5-site dimerized", lat));
   EXPECT_EQ(0, lat.dimension());
   EXPECT_EQ(5, lat.num_sites());
   EXPECT_EQ(4, lat.num_bonds());

@@ -26,16 +26,7 @@
         "rhs": "Darwin"
       },
       "cacheVariables": {
-        "CMAKE_OSX_SYSROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk"
-      }
-    },
-    {
-      "name": "macos-sdk154-rustxml",
-      "displayName": "macOS SDK 15.4 + Rust XML",
-      "inherits": "macos-sdk154",
-      "binaryDir": "${sourceDir}/build-sdk154-rustxml",
-      "cacheVariables": {
-        "LATTICE_USE_RUST_XML": "ON",
+        "CMAKE_OSX_SYSROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk",
         "LATTICE_BUILD_RUST_FFI": "ON"
       }
     }
@@ -50,12 +41,8 @@
       "configurePreset": "macos-sdk154"
     },
     {
-      "name": "macos-sdk154-rustxml",
-      "configurePreset": "macos-sdk154-rustxml"
-    },
-    {
-      "name": "macos-sdk154-rustxml-smoke",
-      "configurePreset": "macos-sdk154-rustxml",
+      "name": "macos-sdk154-smoke",
+      "configurePreset": "macos-sdk154",
       "targets": [
         "test_rust_xml_bridge"
       ]

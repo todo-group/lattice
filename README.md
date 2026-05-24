@@ -16,17 +16,14 @@ Simple Lattice/Graph Library
 * C++-14 compiler
 * CMake to build tests and examples
 * Eigen3
-* [optional] Boost Library (Property Tree) for reading and writing XML files
 
 ## Rust workspace (work in progress)
 
 The repository is being extended with a Rust core under `rust/` as the shared implementation base for future Python and Julia bindings.
 
-### C++ XML compatibility bridge (opt-in)
+### C++ XML compatibility bridge (default)
 
-You can opt-in to the Rust-backed XML implementation from C++ headers by enabling:
-
-* `-DLATTICE_USE_RUST_XML=ON`
+Rust-backed XML implementation is now the default C++ XML backend.
 
 To also build the Rust C ABI library from CMake, enable:
 
@@ -80,9 +77,9 @@ ctest --preset macos-sdk154
 ### Rust XML smoke test (C++ compatibility path)
 
 ```
-cmake --preset macos-sdk154-rustxml
-cmake --build --preset macos-sdk154-rustxml-smoke
-./build-sdk154-rustxml/test/rust_xml_bridge
+cmake --preset macos-sdk154
+cmake --build --preset macos-sdk154-smoke
+./build-sdk154/test/rust_xml_bridge
 ```
 
 ### Rust
@@ -181,13 +178,10 @@ cargo run -p lattice-core --example simple
    
       ```
       std::string file = "lattices.xml";
-      std::ifstream is(file);
-      boost::property_tree::ptree pt;
-      read_xml(is, pt);
       lattice::basis bs;
-      read_xml(pt, "square lattice", bs);
+      read_xml_file(file, "square lattice", bs);
       lattice::unitcell cell;
-      read_xml(pt, "simple2d", cell);
+      read_xml_file(file, "simple2d", cell);
       lattice::graph lat(bs, cell, lattice::extent(4, 4));
       ```
 

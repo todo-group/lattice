@@ -1,31 +1,16 @@
 #ifndef LATTICE_RUST_XML_HPP
 #define LATTICE_RUST_XML_HPP
 
-#include <stdexcept>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 #include "basis.hpp"
 #include "rust_xml_ffi.h"
 
 namespace lattice {
 
-using boost::property_tree::ptree;
-
 namespace detail {
-
-inline std::string ptree_to_xml(const ptree& pt) {
-  std::ostringstream os;
-  boost::property_tree::write_xml(os, pt);
-  return os.str();
-}
-
-inline void xml_to_ptree(const std::string& xml, ptree& pt) {
-  std::istringstream is(xml);
-  boost::property_tree::read_xml(is, pt);
-}
 
 inline std::string c_string(char* ptr) {
   std::string value = ptr ? ptr : "";
@@ -33,10 +18,19 @@ inline std::string c_string(char* ptr) {
   return value;
 }
 
+inline std::string read_stream(std::istream& is) {
+  std::ostringstream os;
+  os << is.rdbuf();
+  return os.str();
+}
+
+inline std::string last_error_message() {
+  return c_string(lattice_last_error_message());
+}
+
 } // namespace detail
 
-inline bool read_xml(ptree& pt, const std::string& name, basis& bs) {
-  auto xml = detail::ptree_to_xml(pt);
+inline bool read_xml(const std::string& xml, const std::string& name, basis& bs) {
   auto raw = lattice_basis_from_xml(xml.c_str(), name.c_str());
   if (!raw) {
     return false;
@@ -52,7 +46,19 @@ inline bool read_xml(ptree& pt, const std::string& name, basis& bs) {
   return true;
 }
 
-inline ptree& write_xml(ptree& pt, const std::string& name, const basis& bs) {
+inline bool read_xml(std::istream& is, const std::string& name, basis& bs) {
+  return read_xml(detail::read_stream(is), name, bs);
+}
+
+inline bool read_xml_file(const std::string& path, const std::string& name, basis& bs) {
+  std::ifstream is(path);
+  if (!is) {
+    return false;
+  }
+  return read_xml(is, name, bs);
+}
+
+inline std::string write_xml(const std::string& name, const basis& bs) {
   lattice_basis_raw raw{};
   raw.dim = bs.dimension();
   raw.values_len = raw.dim * raw.dim;
@@ -63,11 +69,7 @@ inline ptree& write_xml(ptree& pt, const std::string& name, const basis& bs) {
     }
   }
   raw.values = values.data();
-  auto xml = detail::c_string(lattice_basis_to_xml(name.c_str(), &raw));
-  ptree parsed;
-  detail::xml_to_ptree(xml, parsed);
-  pt.add_child("LATTICES.LATTICE", parsed.get_child("LATTICES.LATTICE"));
-  return pt;
+  return detail::c_string(lattice_basis_to_xml(name.c_str(), &raw));
 }
 
 } // end namespace lattice

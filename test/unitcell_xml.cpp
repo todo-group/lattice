@@ -19,36 +19,27 @@
 #include "lattice/unitcell_xml.hpp"
 
 using namespace lattice;
-using boost::property_tree::ptree;
 
 TEST(UnitcellXMLTest, WriteXML) {
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-
-  write_xml(root, "simple1d", unitcell::simple(1));
-  write_xml(root, "simple2d", unitcell::simple(2));
-  write_xml(std::cerr, pt,
-    boost::property_tree::xml_writer_make_settings<std::string>(' ', 2));
-  
+  const std::string xml1 = write_xml("simple1d", unitcell::simple(1));
+  const std::string xml2 = write_xml("simple2d", unitcell::simple(2));
   unitcell cell1, cell2;
-  EXPECT_TRUE(read_xml(pt, "simple1d", cell1));
-  EXPECT_TRUE(read_xml(pt, "simple1d", cell2));
+  EXPECT_TRUE(read_xml(xml1, "simple1d", cell1));
+  EXPECT_TRUE(read_xml(xml2, "simple2d", cell2));
 }
 
 TEST(UnitcellXMLTest, ReadXML1) {
   std::istringstream is(R"(
+<LATTICES>
 <UNITCELL name="simple1d" dimension="1">
   <VERTEX/>
   <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1"/></EDGE>
 </UNITCELL>
+</LATTICES>
     )");
 
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-  read_xml(is, root);
-
   unitcell cell;
-  EXPECT_TRUE(read_xml(pt, "simple1d", cell));
+  EXPECT_TRUE(read_xml(is, "simple1d", cell));
   EXPECT_EQ(1, cell.dimension());
   EXPECT_EQ(1, cell.num_sites());
   EXPECT_EQ(1, cell.num_bonds());
@@ -61,6 +52,7 @@ TEST(UnitcellXMLTest, ReadXML1) {
 
 TEST(UnitcellXMLTest, ReadXML2) {
   std::istringstream is(R"(
+<LATTICES>
 <UNITCELL name="kagome" dimension="2">
   <VERTEX><COORDINATE>0   0</COORDINATE></VERTEX>
   <VERTEX><COORDINATE>0.5 0</COORDINATE></VERTEX>
@@ -72,14 +64,11 @@ TEST(UnitcellXMLTest, ReadXML2) {
   <EDGE><SOURCE vertex="2"/><TARGET vertex="3" offset="1 -1"/></EDGE>
   <EDGE><SOURCE vertex="1"/><TARGET vertex="3" offset="0 -1"/></EDGE>
 </UNITCELL>
+</LATTICES>
     )");
 
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-  read_xml(is, root);
-
   unitcell cell;
-  EXPECT_TRUE(read_xml(pt, "kagome", cell));
+  EXPECT_TRUE(read_xml(is, "kagome", cell));
   EXPECT_EQ(2, cell.dimension());
   EXPECT_EQ(3, cell.num_sites());
   EXPECT_EQ(6, cell.num_bonds());
@@ -94,20 +83,18 @@ TEST(UnitcellXMLTest, ReadXML2) {
 
 TEST(UnitcellXMLTest, ReadXML3) {
   std::istringstream is(R"(
+<LATTICES>
 <UNITCELL name="anisotropic3d" dimension="3">
   <VERTEX/>
   <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0 0"/></EDGE>
   <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1 0"/></EDGE>
   <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 0 1"/></EDGE>
 </UNITCELL>
+</LATTICES>
     )");
 
-  ptree pt;
-  ptree& root = pt.put("LATTICES", "");
-  read_xml(is, root);
-
   unitcell cell;
-  EXPECT_TRUE(read_xml(pt, "anisotropic3d", cell));
+  EXPECT_TRUE(read_xml(is, "anisotropic3d", cell));
   EXPECT_EQ(3, cell.dimension());
   EXPECT_EQ(1, cell.num_sites());
   EXPECT_EQ(3, cell.num_bonds());

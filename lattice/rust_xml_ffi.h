@@ -51,6 +51,7 @@ lattice_graph_raw* lattice_graph_from_xml(const char* xml, const char* name);
 void lattice_graph_raw_free(lattice_graph_raw* raw);
 
 void lattice_string_free(char* ptr);
+char* lattice_last_error_message();
 
 }
 

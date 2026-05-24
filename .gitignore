@@ -31,5 +31,7 @@
 *.out
 *.app
 
-build
-rust/target
+/build/
+/build-*/
+/rust/Cargo.lock
+/rust/target/

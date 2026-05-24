@@ -1,13 +1,13 @@
 #ifndef LATTICE_RUST_XML_UNITCELL_HPP
 #define LATTICE_RUST_XML_UNITCELL_HPP
 
+#include <fstream>
 #include "unitcell.hpp"
 #include "rust_xml.hpp"
 
 namespace lattice {
 
-inline bool read_xml(ptree& pt, const std::string& name, unitcell& cell) {
-  auto xml = detail::ptree_to_xml(pt);
+inline bool read_xml(const std::string& xml, const std::string& name, unitcell& cell) {
   auto raw = lattice_unitcell_from_xml(xml.c_str(), name.c_str());
   if (!raw) {
     return false;
@@ -27,7 +27,19 @@ inline bool read_xml(ptree& pt, const std::string& name, unitcell& cell) {
   return true;
 }
 
-inline ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell) {
+inline bool read_xml(std::istream& is, const std::string& name, unitcell& cell) {
+  return read_xml(detail::read_stream(is), name, cell);
+}
+
+inline bool read_xml_file(const std::string& path, const std::string& name, unitcell& cell) {
+  std::ifstream is(path);
+  if (!is) {
+    return false;
+  }
+  return read_xml(is, name, cell);
+}
+
+inline std::string write_xml(const std::string& name, const unitcell& cell) {
   lattice_unitcell_raw raw{};
   raw.dim = cell.dimension();
   raw.num_sites = cell.num_sites();
@@ -56,11 +68,7 @@ inline ptree& write_xml(ptree& pt, const std::string& name, const unitcell& cell
   raw.bond_types = bond_types.data();
   raw.bond_offsets_len = bond_offsets.size();
   raw.bond_offsets = bond_offsets.data();
-  auto xml = detail::c_string(lattice_unitcell_to_xml(name.c_str(), &raw));
-  ptree parsed;
-  detail::xml_to_ptree(xml, parsed);
-  pt.add_child("LATTICES.UNITCELL", parsed.get_child("LATTICES.UNITCELL"));
-  return pt;
+  return detail::c_string(lattice_unitcell_to_xml(name.c_str(), &raw));
 }
 
 } // end namespace lattice

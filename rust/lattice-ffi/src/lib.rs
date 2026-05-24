@@ -1,7 +1,29 @@
 use lattice_core::{read_basis_from_str, read_graph_from_str, read_unitcell_from_str, write_basis_to_string, write_graph_to_string, write_unitcell_to_string, Basis, BasisMatrix, CoordinateVector, OffsetVector, Graph, Unitcell};
+use std::cell::RefCell;
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_double, c_int};
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::ptr;
+
+thread_local! {
+  static LAST_ERROR: RefCell<Option<String>> = const { RefCell::new(None) };
+}
+
+fn set_last_error(message: impl Into<String>) {
+  LAST_ERROR.with(|slot| {
+    *slot.borrow_mut() = Some(message.into());
+  });
+}
+
+fn clear_last_error() {
+  LAST_ERROR.with(|slot| {
+    *slot.borrow_mut() = None;
+  });
+}
+
+fn copy_last_error() -> Option<String> {
+  LAST_ERROR.with(|slot| slot.borrow().clone())
+}
 
 #[repr(C)]
 pub struct lattice_basis_raw {
@@ -40,106 +62,130 @@ pub struct lattice_graph_raw {
 
 #[no_mangle]
 pub extern "C" fn lattice_string_free(ptr: *mut c_char) {
-  if !ptr.is_null() {
-    unsafe {
-      drop(CString::from_raw(ptr));
+  ffi_void(|| {
+    if !ptr.is_null() {
+      unsafe {
+        drop(CString::from_raw(ptr));
+      }
     }
-  }
+  });
+}
+
+#[no_mangle]
+pub extern "C" fn lattice_last_error_message() -> *mut c_char {
+  ffi_ptr("lattice_last_error_message", || {
+    let Some(message) = copy_last_error() else {
+      return ptr::null_mut();
+    };
+    string_to_c(message)
+  })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_basis_raw_free(ptr: *mut lattice_basis_raw) {
-  if ptr.is_null() {
-    return;
-  }
-  unsafe {
-    let raw = Box::from_raw(ptr);
-    if !raw.values.is_null() {
-      drop(Vec::from_raw_parts(raw.values, raw.values_len, raw.values_len));
+  ffi_void(|| {
+    if ptr.is_null() {
+      return;
     }
-  }
+    unsafe {
+      let raw = Box::from_raw(ptr);
+      if !raw.values.is_null() {
+        drop(Vec::from_raw_parts(raw.values, raw.values_len, raw.values_len));
+      }
+    }
+  });
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_unitcell_raw_free(ptr: *mut lattice_unitcell_raw) {
-  if ptr.is_null() {
-    return;
-  }
-  unsafe {
-    let raw = Box::from_raw(ptr);
-    if !raw.site_types.is_null() {
-      drop(Vec::from_raw_parts(raw.site_types, raw.num_sites, raw.num_sites));
+  ffi_void(|| {
+    if ptr.is_null() {
+      return;
     }
-    if !raw.site_coordinates.is_null() {
-      drop(Vec::from_raw_parts(raw.site_coordinates, raw.site_coordinates_len, raw.site_coordinates_len));
+    unsafe {
+      let raw = Box::from_raw(ptr);
+      if !raw.site_types.is_null() {
+        drop(Vec::from_raw_parts(raw.site_types, raw.num_sites, raw.num_sites));
+      }
+      if !raw.site_coordinates.is_null() {
+        drop(Vec::from_raw_parts(raw.site_coordinates, raw.site_coordinates_len, raw.site_coordinates_len));
+      }
+      if !raw.bond_sources.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_sources, raw.num_bonds, raw.num_bonds));
+      }
+      if !raw.bond_targets.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_targets, raw.num_bonds, raw.num_bonds));
+      }
+      if !raw.bond_types.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_types, raw.num_bonds, raw.num_bonds));
+      }
+      if !raw.bond_offsets.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_offsets, raw.bond_offsets_len, raw.bond_offsets_len));
+      }
     }
-    if !raw.bond_sources.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_sources, raw.num_bonds, raw.num_bonds));
-    }
-    if !raw.bond_targets.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_targets, raw.num_bonds, raw.num_bonds));
-    }
-    if !raw.bond_types.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_types, raw.num_bonds, raw.num_bonds));
-    }
-    if !raw.bond_offsets.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_offsets, raw.bond_offsets_len, raw.bond_offsets_len));
-    }
-  }
+  });
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_graph_raw_free(ptr: *mut lattice_graph_raw) {
-  if ptr.is_null() {
-    return;
-  }
-  unsafe {
-    let raw = Box::from_raw(ptr);
-    if !raw.site_types.is_null() {
-      drop(Vec::from_raw_parts(raw.site_types, raw.num_sites, raw.num_sites));
+  ffi_void(|| {
+    if ptr.is_null() {
+      return;
     }
-    if !raw.site_coordinates.is_null() {
-      drop(Vec::from_raw_parts(raw.site_coordinates, raw.site_coordinates_len, raw.site_coordinates_len));
+    unsafe {
+      let raw = Box::from_raw(ptr);
+      if !raw.site_types.is_null() {
+        drop(Vec::from_raw_parts(raw.site_types, raw.num_sites, raw.num_sites));
+      }
+      if !raw.site_coordinates.is_null() {
+        drop(Vec::from_raw_parts(raw.site_coordinates, raw.site_coordinates_len, raw.site_coordinates_len));
+      }
+      if !raw.bond_sources.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_sources, raw.num_bonds, raw.num_bonds));
+      }
+      if !raw.bond_targets.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_targets, raw.num_bonds, raw.num_bonds));
+      }
+      if !raw.bond_types.is_null() {
+        drop(Vec::from_raw_parts(raw.bond_types, raw.num_bonds, raw.num_bonds));
+      }
     }
-    if !raw.bond_sources.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_sources, raw.num_bonds, raw.num_bonds));
-    }
-    if !raw.bond_targets.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_targets, raw.num_bonds, raw.num_bonds));
-    }
-    if !raw.bond_types.is_null() {
-      drop(Vec::from_raw_parts(raw.bond_types, raw.num_bonds, raw.num_bonds));
-    }
-  }
+  });
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_basis_from_xml(xml: *const c_char, name: *const c_char) -> *mut lattice_basis_raw {
-  with_strs(xml, name, |xml, name| {
-    let basis = read_basis_from_str(xml, name).ok()?;
-    Some(box_basis_raw(&basis))
+  ffi_ptr("lattice_basis_from_xml", || {
+    with_strs(xml, name, |xml, name| {
+      let basis = read_basis_from_str(xml, name).ok()?;
+      Some(box_basis_raw(&basis))
+    })
   })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_unitcell_from_xml(xml: *const c_char, name: *const c_char) -> *mut lattice_unitcell_raw {
-  with_strs(xml, name, |xml, name| {
-    let cell = read_unitcell_from_str(xml, name).ok()?;
-    Some(box_unitcell_raw(&cell))
+  ffi_ptr("lattice_unitcell_from_xml", || {
+    with_strs(xml, name, |xml, name| {
+      let cell = read_unitcell_from_str(xml, name).ok()?;
+      Some(box_unitcell_raw(&cell))
+    })
   })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_graph_from_xml(xml: *const c_char, name: *const c_char) -> *mut lattice_graph_raw {
-  with_strs(xml, name, |xml, name| {
-    let graph = read_graph_from_str(xml, name).ok()?;
-    Some(box_graph_raw(&graph))
+  ffi_ptr("lattice_graph_from_xml", || {
+    with_strs(xml, name, |xml, name| {
+      let graph = read_graph_from_str(xml, name).ok()?;
+      Some(box_graph_raw(&graph))
+    })
   })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_basis_to_xml(name: *const c_char, raw: *const lattice_basis_raw) -> *mut c_char {
-  unsafe {
+  ffi_ptr("lattice_basis_to_xml", || unsafe {
     if name.is_null() {
       return ptr::null_mut();
     }
@@ -156,12 +202,12 @@ pub extern "C" fn lattice_basis_to_xml(name: *const c_char, raw: *const lattice_
       None => return ptr::null_mut(),
     };
     string_to_c(write_basis_to_string(name, &basis))
-  }
+  })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_unitcell_to_xml(name: *const c_char, raw: *const lattice_unitcell_raw) -> *mut c_char {
-  unsafe {
+  ffi_ptr("lattice_unitcell_to_xml", || unsafe {
     if name.is_null() {
       return ptr::null_mut();
     }
@@ -178,12 +224,12 @@ pub extern "C" fn lattice_unitcell_to_xml(name: *const c_char, raw: *const latti
       None => return ptr::null_mut(),
     };
     string_to_c(write_unitcell_to_string(name, &cell))
-  }
+  })
 }
 
 #[no_mangle]
 pub extern "C" fn lattice_graph_to_xml(name: *const c_char, raw: *const lattice_graph_raw) -> *mut c_char {
-  unsafe {
+  ffi_ptr("lattice_graph_to_xml", || unsafe {
     if name.is_null() {
       return ptr::null_mut();
     }
@@ -200,7 +246,28 @@ pub extern "C" fn lattice_graph_to_xml(name: *const c_char, raw: *const lattice_
       None => return ptr::null_mut(),
     };
     string_to_c(write_graph_to_string(name, &graph))
+  })
+}
+
+fn ffi_ptr<T>(api_name: &str, f: impl FnOnce() -> *mut T) -> *mut T {
+  match catch_unwind(AssertUnwindSafe(f)) {
+    Ok(ptr) => {
+      if ptr.is_null() {
+        set_last_error(format!("{api_name} failed"));
+      } else {
+        clear_last_error();
+      }
+      ptr
+    }
+    Err(_) => {
+      set_last_error(format!("{api_name} panicked"));
+      ptr::null_mut()
+    }
   }
+}
+
+fn ffi_void(f: impl FnOnce()) {
+  let _ = catch_unwind(AssertUnwindSafe(f));
 }
 
 fn with_strs<T>(xml: *const c_char, name: *const c_char, f: impl FnOnce(&str, &str) -> Option<T>) -> *mut T {
