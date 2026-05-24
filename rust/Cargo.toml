@@ -1,0 +1,6 @@
+[workspace]
+members = [
+  "lattice-core",
+  "lattice-ffi",
+]
+resolver = "2"
