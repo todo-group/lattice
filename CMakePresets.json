@@ -1,0 +1,73 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 14,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "macos-sdk154",
+      "displayName": "macOS SDK 15.4",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build-sdk154",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "cacheVariables": {
+        "CMAKE_OSX_SYSROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk"
+      }
+    },
+    {
+      "name": "macos-sdk154-rustxml",
+      "displayName": "macOS SDK 15.4 + Rust XML",
+      "inherits": "macos-sdk154",
+      "binaryDir": "${sourceDir}/build-sdk154-rustxml",
+      "cacheVariables": {
+        "LATTICE_USE_RUST_XML": "ON",
+        "LATTICE_BUILD_RUST_FFI": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default"
+    },
+    {
+      "name": "macos-sdk154",
+      "configurePreset": "macos-sdk154"
+    },
+    {
+      "name": "macos-sdk154-rustxml",
+      "configurePreset": "macos-sdk154-rustxml"
+    },
+    {
+      "name": "macos-sdk154-rustxml-smoke",
+      "configurePreset": "macos-sdk154-rustxml",
+      "targets": [
+        "test_rust_xml_bridge"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "macos-sdk154",
+      "configurePreset": "macos-sdk154",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

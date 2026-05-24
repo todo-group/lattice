@@ -18,14 +18,88 @@ Simple Lattice/Graph Library
 * Eigen3
 * [optional] Boost Library (Property Tree) for reading and writing XML files
 
-## How to build tests and examples and run tests
+## Rust workspace (work in progress)
+
+The repository is being extended with a Rust core under `rust/` as the shared implementation base for future Python and Julia bindings.
+
+### C++ XML compatibility bridge (opt-in)
+
+You can opt-in to the Rust-backed XML implementation from C++ headers by enabling:
+
+* `-DLATTICE_USE_RUST_XML=ON`
+
+To also build the Rust C ABI library from CMake, enable:
+
+* `-DLATTICE_BUILD_RUST_FFI=ON`
+
+Rust targets are managed in the workspace under `rust/`:
+
+* `lattice-core`: core model + XML parser/writer
+* `lattice-ffi`: C ABI layer for C++ compatibility
+
+## Build, test, and sample run
+
+### C++ (default)
+
+Configure and build:
 
 ```
 mkdir build
 cd build
 cmake ..
-make
-make test
+cmake --build .
+```
+
+Run C++ tests:
+
+```
+ctest --output-on-failure
+```
+
+Run C++ samples:
+
+```
+./example/construct1
+./example/construct2
+./example/construct3
+./example/construct4
+./example/construct_xml
+./example/ising
+```
+
+### Recommended on macOS (fixed SDK)
+
+Use CMake presets to pin the SDK to `MacOSX15.4.sdk`:
+
+```
+cmake --preset macos-sdk154
+cmake --build --preset macos-sdk154
+ctest --preset macos-sdk154
+```
+
+### Rust XML smoke test (C++ compatibility path)
+
+```
+cmake --preset macos-sdk154-rustxml
+cmake --build --preset macos-sdk154-rustxml-smoke
+./build-sdk154-rustxml/test/rust_xml_bridge
+```
+
+### Rust
+
+Build and run Rust tests:
+
+```
+cd rust
+cargo build
+cargo test
+```
+
+Run Rust sample:
+
+```
+cd rust
+cargo run -p lattice-core --example simple
 ```
 
 ## Classes/types

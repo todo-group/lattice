@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: install eigen3
       run: sudo apt-get install libeigen3-dev
     - name: install boost
@@ -20,3 +20,21 @@ jobs:
       run: cd build && make
     - name: ctest
       run: cd build && ctest -V
+
+  rust-xml-smoke:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: install eigen3
+      run: sudo apt-get install -y libeigen3-dev
+    - name: configure rust xml
+      run: cmake -S . -B build-rustxml -DLATTICE_USE_RUST_XML=ON -DLATTICE_BUILD_RUST_FFI=ON
+    - name: build rust xml smoke
+      run: cmake --build build-rustxml --target test_rust_xml_bridge
+    - name: run rust xml smoke
+      run: ./build-rustxml/test/rust_xml_bridge
+    - name: cargo test
+      run: cd rust && cargo test
