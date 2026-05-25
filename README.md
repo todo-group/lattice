@@ -68,6 +68,8 @@ The Python extension crate is a workspace member, but it is not a default
 member because PyO3 extension modules should be linked by maturin. Build it
 with the Python instructions below.
 
+See [docs/crates.io.md](docs/crates.io.md) for crates.io release steps.
+
 ### Python
 
 Create a virtual environment and install the Python extension in editable mode:
