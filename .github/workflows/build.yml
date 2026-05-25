@@ -2,6 +2,9 @@ name: build
 
 on: [push, pull_request]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
 
@@ -9,7 +12,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: install eigen3
       run: sudo apt-get install libeigen3-dev
     - name: cmake
@@ -25,7 +28,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: install eigen3
       run: sudo apt-get install -y libeigen3-dev
     - name: configure rust xml
@@ -43,9 +46,9 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: setup python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.11"
     - name: create virtualenv

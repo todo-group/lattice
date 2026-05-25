@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-wheels:
     name: build wheel on ${{ matrix.os }}
@@ -19,9 +22,9 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: setup python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.11"
     - name: build wheels
@@ -31,7 +34,7 @@ jobs:
         args: --release --out dist
         manylinux: auto
     - name: upload wheels
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: wheels-${{ matrix.os }}
         path: dist
@@ -42,9 +45,9 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: setup python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: "3.11"
     - name: install maturin
@@ -52,7 +55,7 @@ jobs:
     - name: build sdist
       run: python -m maturin sdist --out dist
     - name: upload sdist
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: sdist
         path: dist
@@ -69,7 +72,7 @@ jobs:
 
     steps:
     - name: download distributions
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         path: dist
         merge-multiple: true

@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "lattice-graph-core"
-version = "0.2.1"
+version = "0.2.2"
 description = "Simple Lattice/Graph Library"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.9"
@@ -33,6 +33,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/todo-group/lattice"
+Documentation = "https://github.com/todo-group/lattice/blob/main/docs/pypi.md"
 Repository = "https://github.com/todo-group/lattice"
 Issues = "https://github.com/todo-group/lattice/issues"
 

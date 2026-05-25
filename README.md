@@ -91,7 +91,8 @@ Run the Python tests:
 .venv/bin/python -m unittest discover -s python/tests
 ```
 
-See [docs/pypi.md](docs/pypi.md) for release-build and PyPI upload steps.
+See [PyPI publishing notes](https://github.com/todo-group/lattice/blob/main/docs/pypi.md)
+for release-build and PyPI upload steps.
 
 Minimal Python example:
 
