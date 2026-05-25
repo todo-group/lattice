@@ -59,7 +59,7 @@ Rust targets are managed in the workspace under `rust/`:
 
 Build and run Rust tests:
 
-```
+```sh
 cargo build
 cargo test
 ```
@@ -93,6 +93,12 @@ Run the Python tests:
 .venv/bin/python -m unittest discover -s python/tests
 ```
 
+Run the Python example:
+
+```sh
+.venv/bin/python python/examples/construct.py
+```
+
 See [PyPI publishing notes](https://github.com/todo-group/lattice/blob/main/docs/pypi.md)
 for release-build and PyPI upload steps.
 
@@ -108,7 +114,7 @@ print(graph.coordinates().shape)
 
 Run Rust samples:
 
-```
+```sh
 cargo run -p lattice-core --example construct1
 cargo run -p lattice-core --example construct2
 cargo run -p lattice-core --example construct3
@@ -130,7 +136,7 @@ Run C++ tests:
 
 Enable tests at configure time, then run `ctest`:
 
-```
+```sh
 cmake -S . -B build -DLATTICE_BUILD_TESTS=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
@@ -138,7 +144,7 @@ ctest --test-dir build --output-on-failure
 
 Run C++ samples:
 
-```
+```sh
 ./build/example/construct1
 ./build/example/construct2
 ./build/example/construct3
@@ -151,7 +157,7 @@ Run C++ samples:
 
 Use CMake presets to pin the SDK to `MacOSX15.4.sdk`:
 
-```
+```sh
 cmake --preset macos-sdk154
 cmake --build --preset macos-sdk154
 ctest --preset macos-sdk154
@@ -210,7 +216,7 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
 * lattice::unitcell
 
   Helper class that contains the structure, i.e. sites and bonds, of the unit cell.
-  
+
 * lattice::graph
 
   This class contains the structure of the whole lattice structure. It provides various information of sites (vertices) and bonds (edges) via the following member functions:
@@ -218,20 +224,84 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
   |  member functions  |  description  |
   | ---- | ---- |
   | std::size\_t dimension() const; | dimension of the lattice |
-  |||
+  | | |
   | std::size\_t num\_sites() const; | total number of sites |
   | std::size\_t site\_type(std::size\_t s) const; | type of site s |
   | const coordinate\_t& coordinate(std::size\_t s) const; | coordinate of site s |
   | std::size\_t num\_neighbors(std::size\_t s) const; | number of neighboring sites of site s  |
   | std::size\_t neighbor(std::size\_t s, std::size\_t k) const; | k-th neighbor site of site s |
   | std::size\_t neighbor\_bond(std::size\_t s, std::size\_t k) const; | bond connecting site s and its k-th neighbor site |
-  |||
+  | | |
   | std::size\_t num\_bonds() const; | total number of bonds |
   | int bond\_type(std::size\_t b) const; | type of bond s |
   | std::size\_t source(std::size\_t b) const; | start point (site) of bond b |
   | std::size\_t target(std::size\_t b) const; | end point (site) of bond b |
-  
+
 ## How to construct lattices
+
+### Python
+
+* periodic chain lattice of 16 sites
+
+  * simplest interface
+
+    ```python
+    import lattice
+
+    graph = lattice.Graph.simple(1, 16)
+    ```
+
+* periodic square lattice of 4 x 4 sites
+
+  * simplest interface
+
+    ```python
+    import lattice
+
+    graph = lattice.Graph.simple(2, 4)
+    ```
+
+  * most generic interface
+
+    ```python
+    import lattice
+
+    basis = lattice.Basis([[1.0, 0.0], [0.0, 1.0]])
+    unitcell = lattice.Unitcell(2)
+    unitcell.add_site([0.0, 0.0])
+    unitcell.add_bond(0, 0, [1, 0])
+    unitcell.add_bond(0, 0, [0, 1])
+    graph = lattice.Graph.from_basis_unitcell_extent(
+        basis,
+        unitcell,
+        [4, 4],
+        [lattice.Boundary.Periodic, lattice.Boundary.Periodic],
+    )
+    ```
+
+  * reading basis and unitcell from XML file
+
+    ```python
+    import lattice
+
+    file = "cxx/example/lattices.xml"
+    basis = lattice.read_basis_from_file(file, "square lattice")
+    cell = lattice.read_unitcell_from_file(file, "simple2d")
+    graph = lattice.Graph.from_basis_unitcell_extent(
+        basis,
+        cell,
+        [4, 4],
+        [lattice.Boundary.Periodic, lattice.Boundary.Periodic],
+    )
+    ```
+
+  * fully connected lattice of 10 sites
+
+    ```python
+    import lattice
+
+    graph = lattice.Graph.fully_connected(10)
+    ```
 
 ### Rust
 
@@ -297,13 +367,13 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
     let graph = Graph::from_basis_unitcell_extent(&basis, &cell, &extent, &boundary);
     ```
 
-* fully connected lattice of 10 sites
+  * fully connected lattice of 10 sites
 
-  ```rust
-  use lattice_core::Graph;
+    ```rust
+    use lattice_core::Graph;
 
-  let graph = Graph::fully_connected(10);
-  ```
+    let graph = Graph::fully_connected(10);
+    ```
 
 ### C++
 
@@ -314,7 +384,7 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
     ```cpp
      lattice::graph lat = lattice::graph::simple(1, 16);
      ```
-    
+
   * most generic interface
 
     ```cpp
@@ -327,7 +397,7 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
      std::vector<lattice::boundary_t> boundary(1, lattice::boundary_t::periodic);
      lattice::graph lat(basis, unitcell, span, boundary);
      ```
-     
+
 * periodic square lattice of 4 x 4 sites
 
   * simplest interface
@@ -335,7 +405,7 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
     ```cpp
      lattice::graph lat = lattice::graph::simple(2, 4);
      ```
-    
+
   * most generic interface
 
     ```cpp
@@ -350,8 +420,8 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
      lattice::graph lat(basis, unitcell, span, boundary);
      ```
 
-   * reading basis and unitcell from XML file
-   
+  * reading basis and unitcell from XML file
+
     ```cpp
       std::string file = "lattices.xml";
       lattice::basis bs;
@@ -361,8 +431,8 @@ c++ -std=c++17 main.cpp $(pkg-config --cflags --libs lattice) -o app
       lattice::graph lat(bs, cell, lattice::extent(4, 4));
       ```
 
-* fully connected lattice of 10 sites
+  * fully connected lattice of 10 sites
 
-  ```cpp
-  lattice::graph lat = lattice::graph::fully_connected(10);
-  ```
+    ```cpp
+    lattice::graph lat = lattice::graph::fully_connected(10);
+    ```
