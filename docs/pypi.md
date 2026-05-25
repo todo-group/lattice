@@ -11,6 +11,7 @@ python3 -m venv .venv
 .venv/bin/python -m maturin build --release --out dist
 .venv/bin/python -m maturin sdist --out dist
 .venv/bin/python -m twine check dist/*
+.venv/bin/python -m pip install --force-reinstall dist/lattice_graph_core-*.tar.gz
 ```
 
 ## Upload
