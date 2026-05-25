@@ -35,3 +35,5 @@
 /build-*/
 /Cargo.lock
 /target/
+/.venv/
+/dist/

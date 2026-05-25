@@ -36,3 +36,25 @@ jobs:
       run: cd build-rustxml/test && ./rust_xml_bridge
     - name: cargo test
       run: cargo test
+
+  python-bindings:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: create virtualenv
+      run: python -m venv .venv
+    - name: install python build tools
+      run: .venv/bin/python -m pip install maturin numpy
+    - name: check python crate
+      run: cargo check -p lattice-python
+    - name: install python bindings
+      run: .venv/bin/python -m maturin develop
+    - name: run python tests
+      run: .venv/bin/python -m unittest discover -s python/tests

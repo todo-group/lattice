@@ -2,5 +2,10 @@
 members = [
   "rust/lattice-core",
   "rust/lattice-ffi",
+  "rust/lattice-python",
+]
+default-members = [
+  "rust/lattice-core",
+  "rust/lattice-ffi",
 ]
 resolver = "2"

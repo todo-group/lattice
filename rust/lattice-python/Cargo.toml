@@ -1,0 +1,18 @@
+[package]
+name = "lattice-python"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Python bindings for lattice"
+repository = "https://github.com/todo-group/lattice"
+readme = "../../README.md"
+keywords = ["lattice", "graph", "physics", "python"]
+
+[lib]
+name = "lattice"
+crate-type = ["cdylib"]
+
+[dependencies]
+lattice-core = { path = "../lattice-core" }
+numpy = "0.25"
+pyo3 = { version = "0.25", features = ["extension-module"] }

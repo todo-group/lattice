@@ -21,6 +21,13 @@ Simple Lattice/Graph Library
 
 * Rust toolchain (`rustc`, `cargo`)
 
+### For Python
+
+* Python (>= 3.9)
+* Rust toolchain (`rustc`, `cargo`)
+* maturin
+* NumPy
+
 ### For C++
 
 * C++-17 compiler
@@ -44,6 +51,7 @@ Rust targets are managed in the workspace under `rust/`:
 
 * `lattice-core`: core model + XML parser/writer
 * `lattice-ffi`: C ABI layer for C++ compatibility
+* `lattice-python`: PyO3/maturin Python bindings
 
 ## Build, test, and sample run
 
@@ -54,6 +62,45 @@ Build and run Rust tests:
 ```
 cargo build
 cargo test
+```
+
+The Python extension crate is a workspace member, but it is not a default
+member because PyO3 extension modules should be linked by maturin. Build it
+with the Python instructions below.
+
+### Python
+
+Create a virtual environment and install the Python extension in editable mode:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install maturin numpy
+.venv/bin/python -m maturin develop
+```
+
+From PyPI, the distribution name is `lattice-graph-core` and the import name is
+`lattice`:
+
+```sh
+python -m pip install lattice-graph-core
+```
+
+Run the Python tests:
+
+```sh
+.venv/bin/python -m unittest discover -s python/tests
+```
+
+See [docs/pypi.md](docs/pypi.md) for release-build and PyPI upload steps.
+
+Minimal Python example:
+
+```python
+import lattice
+
+graph = lattice.Graph.simple(2, 4)
+print(graph.num_sites)
+print(graph.coordinates().shape)
 ```
 
 Run Rust samples:
